@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.patrupopa.wordscocktail.MainActivity" >
+
+    <item
+        android:id="@+id/save_game"
+        android:orderInCategory="100"
+        android:title="@string/save_game"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/end_game"
+        android:orderInCategory="100"
+        android:title="@string/end_game"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/rotate_board"
+        android:orderInCategory="100"
+        android:title="@string/rotate_board"
+        app:showAsAction="never"/>
+    
+
+</menu>

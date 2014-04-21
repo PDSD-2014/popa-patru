@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">WordsCocktail</string>
+   <string name="multiplayer">Multiplayer Game</string>
+    <string name="one_player">Try it out!</string>
+    <string name="restore_game">Restore Game</string>
+	<string name="prefs">Settings</string>
+
+	<string name="dialog_no_saved">There is no game saved.  If you can read this
+	message, something is likely broken.</string>
+	<string name="dialog_ok">Menu</string>
+	<string name="dialog_cancel">Cancel</string>
+
+	<string name="dialog_help">Instructions</string>
+	<string name="actual_help">
+	Find as many words as you can as quickly as possible.
+	Touch the screen and move your finger to adjacent squares to spell out words.
+	You have three minutes to find as many words as possible.
+
+	\n\nScoring:
+	\nOn 4x4 boards, words must be at least three letters long.  On 5x5 boards,
+	words must be at least four letters long.  
+	Words that have three or four letters are worth one point.  Longer words
+	are worth more points.  Proper nouns are not counted.\n\n
+	</string>
+
+	<string name="dialog_loading">Loading</string>
+
+	<!-- these are the items from the menu -->
+	<string name="rotate_board">Rotate Board</string>
+	<string name="save_game">Save Game</string>
+	<string name="end_game">Quit</string>
+	<string name="button_ok">Got it!</string>
+
+	<string name="dialog_dict_select">Select Dictionary</string>
+
+	<string name="show_missed">Show Missed Words</string>
+	<string name="hide_missed">Hide Missed Words</string>
+
+	<string name="show_unique">Show Unique Words</string>
+	<string name="hide_unique">Hide Unique Words</string>
+	
+	<!-- this is what happens if you press the image -->
+	<string name="description_logo">Our absolutely awesome log for this Application></string>
+
+</resources>
