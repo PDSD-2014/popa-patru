@@ -35,7 +35,10 @@ public class Board {
 
 	public String getElementAt(int i)
 	{
-		
+		if( i > (_size - 1) )
+		{
+			return null;
+		}
 		return _board[i];
 	}
 	

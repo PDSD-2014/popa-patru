@@ -1,5 +1,7 @@
 package com.patrupopa.wordscocktail;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -21,10 +23,14 @@ public class Game implements Counter {
 	private int _wordCounter;
 	private Context _context;
 	private int _boardSize;
-	private int _timeLimit;
-	private int _minWordLength;
-
 	
+	private long _timeTicking;
+	private int _maxTime;
+	
+	private int _minWordLength;
+	private ArrayList<String> goodWords;
+	private long _startTime; 
+
 	public Game(PlaySingleGame playSingleGame, Bundle bun) {
 		// TODO Auto-generated constructor stub
 	}
@@ -32,12 +38,14 @@ public class Game implements Counter {
 	public Game(Context c) {
 		// TODO Auto-generated constructor stub
 		_context = c;
-		setStatus(Status.RUNNING);
+		setStatus(Status.STARTING);
 		setWordCounter(0);
 		setBoardSize(16);
 		setMinWordLength(3);
 		setTimeLimit(60);
 		generateBoard();
+		goodWords = new ArrayList<String>();
+
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -61,11 +69,14 @@ public class Game implements Counter {
 	public Game(Context c, SharedPreferences preferences) {
 		
 		_context = c;
-		setStatus(Status.RUNNING);
+		setStatus(Status.STARTING);
 		setWordCounter(0);
 		setBoardSize(16);
 		setMinWordLength(3);
+		//in seconds
 		setTimeLimit(60);
+		generateBoard();
+		goodWords = new ArrayList<String>();
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -76,9 +87,12 @@ public class Game implements Counter {
 		_minWordLength = i;
 	}
 
+	//milliseconds
 	private void setTimeLimit(int i) {
 		// TODO Auto-generated method stub
-		_timeLimit = i;
+		_timeTicking = i;
+		//this is in milliseconds
+		_maxTime = i*1000;
 	}
 
 	private void setBoardSize(int i) {
@@ -122,17 +136,51 @@ public class Game implements Counter {
 	@Override
 	public int timer() {
 		// TODO Auto-generated method stub
-		return 0;
+		_timeTicking--;
+		if(_timeTicking < 0 )
+		{
+			//reset timeTicking
+			_timeTicking = 0;
+			//reset status of current game thread
+			_status = Status.FINISHED;
+		}
+		else
+		{
+			long currentTime = System.currentTimeMillis();
+			long milliseconds = ( currentTime - _startTime );
+			//do not forget to convert back to seconds
+			_timeTicking = ((_maxTime - milliseconds)/1000);
+		}
+		return (int)_timeTicking;
 	};
-	
+
+	/*this method is invoked in order to start this session of the game*/
 	public void start()
 	{
 		if( _status != Status.STARTING ) {
 			return;
 		}
 
-		//_start = new Date();
+		//when starting change the status to RUNNING
 		_status = Status.RUNNING;
+		_startTime = System.currentTimeMillis();
+		
 	}
 
+	public String getWordCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String getMaxWordCount() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean goodWord(String result) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	
 }
