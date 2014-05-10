@@ -18,8 +18,7 @@ public class Board {
 	}
 	
 	public int getWidth()
-	{
-		
+	{	
 		return _width;
 	}
 	
@@ -44,8 +43,10 @@ public class Board {
 	
 	public String getElementAt(int x , int y)
 	{
-		//TODO
-		return null;
+		int vector_pos = x * getWidth() + y;
+		if (vector_pos > getSize())
+			return null;
 		
+		return getElementAt(vector_pos);	
 	}
 }

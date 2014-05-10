@@ -53,7 +53,7 @@ public class GameThread implements Runnable{
 	}
 	public GameThread()
 	{
-		_workers = new LinkedList<>();
+		_workers = new LinkedList<Worker>();
 		_stop = false;
 		_handler = new Handler();
 		_delay = 100;//these are milliseconds

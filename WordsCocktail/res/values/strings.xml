@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">WordsCocktail</string>
+    <string name="app_name">Words Cocktail</string>
    <string name="multiplayer">Multiplayer Game</string>
     <string name="one_player">Try it out!</string>
     <string name="restore_game">Restore Game</string>
