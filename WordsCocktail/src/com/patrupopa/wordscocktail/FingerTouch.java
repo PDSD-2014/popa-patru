@@ -2,6 +2,8 @@ package com.patrupopa.wordscocktail;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 public class FingerTouch {
 	private float  _left;
 	private float _top;
@@ -14,7 +16,6 @@ public class FingerTouch {
 	
 	public FingerTouch(float left, float top, float right, float bottom,
 			int width, int height, Game g) {
-		// TODO Auto-generated constructor stub
 		_left = left;
 		_top = top;
 		_bottom = bottom;
@@ -39,7 +40,6 @@ public class FingerTouch {
 	}
 
 	private int detectColumn(float x) {
-		// TODO Auto-generated method stub
 		float colWidth = ( _right - _left)/_width;
 		return (int) ((x-_left )/colWidth);
 	}
@@ -51,31 +51,27 @@ public class FingerTouch {
 	}
 
 	public String NotTouching(float x , float y) {
-		// TODO Auto-generated method stub
 		if( x < _left || x > _right || x < _top || x > _bottom )
 			return null;
 		if(_game == null )
-		{
 			return null;
-		}
 		if(_game.getBoard() == null )
-		{
 			return null;
-		}
+		
 		String word="";
-		for(int i = 0 ; i < _positions.size();i++)
+		for (int i = 0; i < _positions.size(); i++)
 		{
 			word += _game.getBoard().getElementAt(_positions.get(i));
 		}
 		
 		return word;
 	}
-	public ArrayList<Integer> getPositions()
-	{
+	
+	public ArrayList<Integer> getPositions() {
 		return _positions;
 	}
+	
 	public void reset() {
-		// TODO Auto-generated method stub
 		_positions.clear();
 	}
 	
