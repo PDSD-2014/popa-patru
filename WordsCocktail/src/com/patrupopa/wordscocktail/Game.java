@@ -1,12 +1,19 @@
 package com.patrupopa.wordscocktail;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Random;
+
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+
 import com.patrupopa.wordscocktail.Game.Status;
+
 
 public class Game implements Counter {
 	
@@ -29,6 +36,7 @@ public class Game implements Counter {
 	
 	private int _minWordLength;
 	private ArrayList<String> goodWords;
+	private ArrayList<LetterProb> alphabet;
 	private long _startTime; 
 
 	public Game(PlaySingleGame playSingleGame, Bundle bun) {
@@ -45,6 +53,7 @@ public class Game implements Counter {
 		setTimeLimit(60);
 		generateBoard();
 		goodWords = new ArrayList<String>();
+		alphabet = new ArrayList<LetterProb>();
 
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
@@ -53,7 +62,73 @@ public class Game implements Counter {
 
 	private void generateBoard() {
 		// TODO Auto-generated method stub
-		String[] b = {"C","A","R","D","D","I","A","N","I","R","I","N","B","A","N","I"};
+		
+		InputStream alphabet_str = 
+				_context.getResources().openRawResource(R.raw.prob_alphapbet);
+		BufferedReader alphabet_rdr = new BufferedReader(new InputStreamReader(alphabet_str));
+		//populate the alphabet with the probabilities
+		
+		try {
+			for( String line = alphabet_rdr.readLine();line != null; line=alphabet_rdr.readLine()) {
+				
+				String probabs[] = line.split(" ");
+				LetterProb letter = new LetterProb(probabs[0]);
+				
+				for( int i = 1; i < probabs.length; ++i ) 
+				{
+					letter.addProbability(Integer.getInteger(probabs[i]));
+				}
+				alphabet.add(letter);
+				
+			}
+		} catch (Exception e) {
+			// 
+		}
+		
+		//now generate the letters in random manner based on  the alphabet above
+		int total = 0;
+		Random rng = new Random();
+		String b[] = new String[_boardSize];
+
+		for( int i=0; i < alphabet.size(); ++i ) 
+		{
+			total += alphabet.get(i).getTop();
+		}
+
+		// get the letters randomly based o the bigger probabilities
+		for( int i = 0 ; i < _boardSize; ++i ) 
+		{
+			LetterProb letter = null;
+			int remaining = rng.nextInt(total);
+			
+			for( int j=0 ; j < alphabet.size(); ++j ) 
+			{
+				letter = alphabet.get(j);
+				remaining -= letter.getTop();
+				if ( letter.getTop() > 0 && remaining <= 0) 
+				{
+					break;
+				}
+			}
+			b[i] = letter.getLetter();
+			total -= letter.removeTop();
+			total += letter.getTop();
+		}
+
+		// now shuffle the letters random manner, by generating positions
+		String aux = null;
+		int newPos = 0;
+		for( int pos = 0 ; pos < _boardSize; ++pos ) 
+		{
+			newPos = rng.nextInt(pos);
+			aux = b[pos];
+			b[pos] = b[newPos];
+			b[newPos] = aux;
+		}
+		
+		
+		//String[] b = {"C","A","R","D","D","I","A","N","I","R","I","N","B","A","N","I"};
+		
 		if( b.length < getBoardSize())
 		{
 			return;
@@ -77,6 +152,7 @@ public class Game implements Counter {
 		setTimeLimit(60);
 		generateBoard();
 		goodWords = new ArrayList<String>();
+		alphabet = new ArrayList<LetterProb>();
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
