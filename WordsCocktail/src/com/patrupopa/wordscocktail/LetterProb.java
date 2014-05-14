@@ -22,12 +22,12 @@ public class LetterProb {
 	
 	public int getTop()
 	{
-		return _probabilities.get(0);
+		return _probabilities.get(0).intValue();
 	}
 	
 	public int removeTop()
 	{
-		return _probabilities.remove(0);
+		return _probabilities.remove(0).intValue();
 	}
 	public String getLetter()
 	{

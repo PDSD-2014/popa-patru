@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Words Cocktail</string>
-   <string name="multiplayer">Multiplayer Game</string>
-    <string name="one_player">Try it out!</string>
+   <string name="multiplayer">Play with others</string>
+    <string name="one_player">Train yourself!</string>
     <string name="restore_game">Restore Game</string>
 	<string name="prefs">Settings</string>
 

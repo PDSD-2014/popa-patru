@@ -51,9 +51,10 @@ public class Game implements Counter {
 		setBoardSize(16);
 		setMinWordLength(3);
 		setTimeLimit(60);
+		alphabet = new ArrayList<LetterProb>();
 		generateBoard();
 		goodWords = new ArrayList<String>();
-		alphabet = new ArrayList<LetterProb>();
+		
 
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
@@ -76,7 +77,9 @@ public class Game implements Counter {
 				
 				for( int i = 1; i < probabs.length; ++i ) 
 				{
-					letter.addProbability(Integer.getInteger(probabs[i]));
+					Integer probability = Integer.parseInt(probabs[i]);
+					if( probability != null )
+						letter.addProbability(probability);
 				}
 				alphabet.add(letter);
 				
@@ -92,7 +95,12 @@ public class Game implements Counter {
 
 		for( int i=0; i < alphabet.size(); ++i ) 
 		{
-			total += alphabet.get(i).getTop();
+			LetterProb lp = alphabet.get(i);
+			if( lp != null )
+			{
+				int aux = lp.getTop();
+				total += aux;
+			}
 		}
 
 		// get the letters randomly based o the bigger probabilities
@@ -104,8 +112,9 @@ public class Game implements Counter {
 			for( int j=0 ; j < alphabet.size(); ++j ) 
 			{
 				letter = alphabet.get(j);
-				remaining -= letter.getTop();
-				if ( letter.getTop() > 0 && remaining <= 0) 
+				int prob = letter.getTop();
+				remaining -= prob;
+				if ( prob > 0 && remaining <= 0) 
 				{
 					break;
 				}
@@ -120,7 +129,7 @@ public class Game implements Counter {
 		int newPos = 0;
 		for( int pos = 0 ; pos < _boardSize; ++pos ) 
 		{
-			newPos = rng.nextInt(pos);
+			newPos = rng.nextInt(pos+1);
 			aux = b[pos];
 			b[pos] = b[newPos];
 			b[newPos] = aux;
