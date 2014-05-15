@@ -18,14 +18,18 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/multiplayer" />
+        android:text="@string/multiplayer"
+        android:background="@drawable/general_button"
+        style="@style/GeneralButton" />
 
     <Button
         android:id="@+id/one_player"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/one_player" />
+        android:text="@string/one_player"
+        android:background="@drawable/general_button"
+        style="@style/GeneralButton" />
 
     <Button
         android:id="@+id/restore_game"
@@ -33,20 +37,26 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:enabled="false"
-        android:text="@string/restore_game" />
+        android:text="@string/restore_game"
+        android:background="@drawable/general_button"
+        style="@style/GeneralButton" />
 
     <Button
         android:id="@+id/preferences"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/prefs" />
+        android:text="@string/prefs"
+        android:background="@drawable/general_button"
+        style="@style/GeneralButton" />
 
     <Button
         android:id="@+id/about"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/dialog_help" />
+        android:text="@string/dialog_help"
+        android:background="@drawable/general_button"
+        style="@style/GeneralButton" />
 
 </LinearLayout>

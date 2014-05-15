@@ -11,11 +11,36 @@
             backward-compatibility can go here.
         -->
     </style>
-
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        
-        
-    </style>
+    
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+		<item name="android:textSize">18sp</item>
+		<item name="actionBarStyle">@style/AppTheme.ActionBarStyle</item>
+		<item name="android:actionBarStyle">@style/AppTheme.ActionBarStyle</item>
+   </style>
+   
+    <style name="AppTheme.ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="android:background">#0C3C00</item>
+		<item name="titleTextStyle">@style/AppTheme.ActionBarStyle.TitleTextStyle</item>
+		<item name="android:titleTextStyle">@style/AppTheme.ActionBarStyle.TitleTextStyle</item>
+   </style>
+   
+    <style name="AppTheme.ActionBarStyle.TitleTextStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
+		<item name="android:textStyle">bold</item>
+		<item name="android:textColor">#ffffff</item>
+		<item name="android:shadowColor">#000000</item>
+	    <item name="android:shadowDx">1</item>
+	    <item name="android:shadowDy">1</item>
+	    <item name="android:shadowRadius">2</item>
+   </style>
+    
+    <style name="GeneralButton">
+        <item name="android:layout_margin">3sp</item>
+	    <item name="android:textColor">#ffffff</item>
+	    <item name="android:gravity">center</item>
+	    <item name="android:shadowColor">#000000</item>
+	    <item name="android:shadowDx">1</item>
+	    <item name="android:shadowDy">1</item>
+	    <item name="android:shadowRadius">2</item>
+	</style>
 
 </resources>
