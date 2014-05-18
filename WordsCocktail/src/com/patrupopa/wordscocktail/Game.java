@@ -344,8 +344,10 @@ public Game(Context c, SharedPreferences preferences) {
 	//receives a string and checkes whether or not this is a word from the dictionary
 	public boolean goodWord(String result) {
 		// TODO Auto-generated method stub
-		if( _trie == null )
+		if( _trie == null || result.length() < 2 )
+		{
 			return false;
+		}
 		return _trie.search(result);
 	}
 

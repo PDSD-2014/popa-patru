@@ -23,7 +23,7 @@ public class PlayView extends View implements Worker {
 	private ArrayList<Integer> _goodCells;
 	private int _redrawFreq;
 	public static final int REDRAW_DELAY = 15;
-
+	private boolean _goodWord;
 	public PlayView( Context context , Game game) {
 		super(context);
 		_game = game;
@@ -33,6 +33,7 @@ public class PlayView extends View implements Worker {
 		_remainingTime = 0 ; 
 		_goodCells = new ArrayList<Integer>();
 		_redrawFreq = REDRAW_DELAY;
+		_goodWord = false;
 	}
 
 	@Override
@@ -93,10 +94,17 @@ public class PlayView extends View implements Worker {
 					break;
 				if( _game.goodWord(result.toLowerCase()) == true )
 				{
-					_goodCells.addAll(_fingerTouch.getPositions());
-					invalidate();
+					//_goodCells.addAll(_fingerTouch.getPositions());
+					_goodWord = true;
+					//invalidate();
 				}
+				else
+				{
+					_goodWord = false;
+				}
+				_goodCells.addAll(_fingerTouch.getPositions());
 				_fingerTouch.reset();
+				invalidate();
 				break;
 		}
 		
@@ -107,10 +115,18 @@ public class PlayView extends View implements Worker {
 
 	private void highlight(Canvas canvas)
 	{
+		if( _goodCells.size() == 0 )
+			return;
 		//draw them , and then make sure you delete it
 		Paint green = new Paint();
-		green.setARGB(255, 0, 255, 0);
-
+		if( _goodWord == true )
+		{
+			green.setARGB(255, 0, 255, 0);
+		}
+		else 
+		{
+			green.setARGB(255, 255, 0, 0);
+		}
 		float _lat = Math.min(getMeasuredHeight(), getMeasuredWidth());
 		_lat = _lat - 2 * PADDING;
 		float distance = _lat/4f;
