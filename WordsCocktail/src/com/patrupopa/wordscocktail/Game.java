@@ -65,7 +65,7 @@ public class Game implements Counter {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Game(Context c) {
+	public Game(Context c,Dictionary trie) {
 		// TODO Auto-generated constructor stub
 		_context = c;
 		setStatus(Status.STARTING);
@@ -74,8 +74,9 @@ public class Game implements Counter {
 		setMinWordLength(3);
 		setTimeLimit(60);
 		alphabet = new ArrayList<LetterProb>();
-		if( _trie == null)
-			loadDictionary();
+//		if( _trie == null)
+//			loadDictionary();
+		_trie = trie;
 		generateBoard();
 		goodWords = new ArrayList<String>();
 		_minWordLength = 3;
@@ -96,8 +97,8 @@ public Game(Context c, SharedPreferences preferences) {
 		setTimeLimit(60);
 		alphabet = new ArrayList<LetterProb>();
 		//do not instantiate the dictionary several times
-		if( _trie == null)
-			loadDictionary();
+//		if( _trie == null)
+//			loadDictionary();
 		generateBoard();
 		goodWords = new ArrayList<String>();
 		_minWordLength = 3;
@@ -153,6 +154,7 @@ public Game(Context c, SharedPreferences preferences) {
 	private void generateBoard() {
 		// TODO Auto-generated method stub
 		
+		//end of comment
 		InputStream alphabet_str = 
 				_context.getResources().openRawResource(R.raw.prob_alphapbet);
 		BufferedReader alphabet_rdr = new BufferedReader(new InputStreamReader(alphabet_str));
@@ -224,14 +226,17 @@ public Game(Context c, SharedPreferences preferences) {
 			b[newPos] = aux;
 		}
 		
-		//hard coded version
-		//String[] b = {"C","A","R","D","D","I","A","N","I","R","I","N","B","A","N","I"};
 		
 		if( b.length < getBoardSize())
 		{
 			return;
 		}
+		//uncomment this
 		_board = new Board(b);
+		
+		//hard coded version, comment out!!!!!!!
+//		String[] hc = {"A","D","O","D","H","A","A","N","I","R","I","N","B","A","N","I"};
+//		_board = new Board(hc);
 	}
 
 	public Board getBoard()
@@ -339,7 +344,9 @@ public Game(Context c, SharedPreferences preferences) {
 	//receives a string and checkes whether or not this is a word from the dictionary
 	public boolean goodWord(String result) {
 		// TODO Auto-generated method stub
-		return true;
+		if( _trie == null )
+			return false;
+		return _trie.search(result);
 	}
 
 	

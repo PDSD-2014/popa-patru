@@ -91,7 +91,7 @@ public class PlayView extends View implements Worker {
 				String result = _fingerTouch.NotTouching(event.getX(), event.getY());
 				if( result == null )
 					break;
-				if( _game.goodWord(result) == true )
+				if( _game.goodWord(result.toLowerCase()) == true )
 				{
 					_goodCells.addAll(_fingerTouch.getPositions());
 					invalidate();

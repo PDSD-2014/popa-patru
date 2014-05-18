@@ -11,13 +11,22 @@ public class Dictionary {
 	 * @param string The word to search for.
 	 * @return Whether or not the word exists in the dictionary.
 	 */
-	public boolean search(String string) {
-		if (roots.containsKey(string.charAt(0))) {
-			if (string.length()==1 && roots.get(string.charAt(0)).endOfWord) {
+	public boolean search(String string) 
+	{
+		Character key = Character.valueOf(string.charAt(0));
+		boolean contains =roots.containsKey(key);
+		contains =roots.containsKey(string.charAt(0));
+		if (roots.containsKey(string.charAt(0))) 
+		{
+			if ( string.length() == 1 && roots.get(string.charAt(0)).endOfWord) {
 				return true;
 			}
-			return searchFor(string.substring(1),roots.get(string.charAt(0)));
-		} else {
+			boolean variable = searchFor(string.substring(1),roots.get(string.charAt(0)));
+					
+			return variable;
+		} 
+		else 
+		{
 			return false;
 		}	
 	}
@@ -26,32 +35,41 @@ public class Dictionary {
 	 * Insert a word into the dictionary.
 	 * @param string The word to insert.
 	 */
-	public boolean insert(String string) {
-		if ( !roots.containsKey(string.charAt(0))) 
+	public boolean insert(String string) 
+	{
+		Character key = Character.valueOf(string.charAt(0));
+		boolean contains = roots.containsKey(key);
+		
+		if ( contains == false ) 
 		{
-			roots.put(string.charAt(0), new Node());
+			roots.put(key , new Node());
 		}
 		
-		return insertWord(string.substring(1),roots.get(string.charAt(0)));
+		return insertWord(string.substring(1),roots.get(key));
 		
 	}
 	
 	//Recursive method that inserts a new word into the trie tree.
 	private boolean insertWord(String string, Node node) {
 		final Node nextChild;
-		if (node.children.containsKey(string.charAt(0))) 
+		Character key = Character.valueOf(string.charAt(0));
+		boolean contains = node.children.containsKey(key);
+		
+		if ( contains == true ) 
 		{
-			nextChild = node.children.get(string.charAt(0));
+			nextChild = node.children.get(key);
 		} else 
 		{
 			nextChild = new Node();
-			node.children.put(string.charAt(0), nextChild);
+			node.children.put(key, nextChild);
 		}
 				
-		if (string.length() == 1) {
+		if (string.length() == 1) 
+		{
 			nextChild.endOfWord = true;
 			return true;
-		} else 
+		} 
+		else 
 		{
 			insertWord(string.substring(1),nextChild);
 		}
@@ -61,17 +79,23 @@ public class Dictionary {
 
 	//Recursive method that searches through the Trie Tree to find the value.
 	private boolean searchFor(String string, Node node) {
-		if (string.length()==0) {
-			if (node.endOfWord) {
+		if ( string.length() == 0 )  
+		{
+			if (node.endOfWord) 
+			{
 				return true;
-			} else {
+			} else 
+			{
 				return false;
 			}
 		}
 		
-		if (node.children.containsKey(string.charAt(0))) {
+		if (node.children.containsKey(string.charAt(0))) 
+		{
 			return searchFor(string.substring(1),node.children.get(string.charAt(0)));
-		} else {
+		} 
+		else 
+		{
 			return false;
 		}
 	}

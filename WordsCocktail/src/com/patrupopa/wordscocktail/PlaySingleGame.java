@@ -1,10 +1,19 @@
 package com.patrupopa.wordscocktail;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import com.patrupopa.wordscocktail.Game.Status;
 
 import android.app.Activity;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,11 +21,12 @@ import android.view.ViewGroup;
 
 public class PlaySingleGame extends Activity implements Stopper {
 
-    //private variables
+    private static final String TAG = "In play single game";
+	//private variables
 	Game _game;
 	private GameThread _thread;
 	private Menu menu;
-	
+	Dictionary _trie;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -35,6 +45,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 			if(action.equals("com.popapatru.wordscocktail.action.RESTORE_GAME")) {
 				//restoreGame();
 			} else if(action.equals("com.popapatru.wordscocktail.action.NEW_GAME")) {
+				loadDictionary();
 				newSingleGame();
 			} else {
 				
@@ -94,7 +105,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 
 	private void newSingleGame() {
 		//make new instance of  the game
-		_game = new Game(this);
+		_game = new Game(this,_trie);
 		
 		PlayView _playView = new PlayView(this,_game);
 		
@@ -143,4 +154,46 @@ public class PlaySingleGame extends Activity implements Stopper {
 			return;
 		}
 	}
+	private void loadDictionary() {
+		// TODO Auto-generated method stub
+			Log.d(TAG, "Loading dictionary...");
+	        InputStream inputStream = getResources().openRawResource(R.raw.dictionary);
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	        _trie = new Dictionary();
+	        
+	        try {
+	            String line;
+	            //int counter = 0 ;
+	            try {
+					while ((line = reader.readLine()) != null /*&& counter < 1000*/ ) 
+					{
+					    String[] strings = line.split(" ");
+					    
+					    if( strings[0].length() < 2 )
+				    		continue;
+					    boolean result = _trie.insert(strings[0].trim());
+					    if ( result  == false ) 
+					    {
+					        Log.e(TAG, "unable to add word: " + strings[0].trim());
+					    }
+				    
+					    //counter++;
+					}
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        } finally {
+	            try {
+					reader.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        }
+	        Log.d(TAG, "DONE loading words.");
+		
+	}
+
 }

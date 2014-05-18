@@ -1,0 +1,24 @@
+﻿Implemented Dictionary logic, possibly out of memory problem
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   WordsCocktail/AndroidManifest.xml
+#	modified:   WordsCocktail/res/drawable-ldpi/Thumbs.db
+#	modified:   WordsCocktail/res/drawable-mdpi/Thumbs.db
+#	new file:   WordsCocktail/res/layout/instructions.xml
+#	new file:   WordsCocktail/res/raw/definitions.txt
+#	new file:   WordsCocktail/res/raw/filename.txt
+#	new file:   WordsCocktail/res/raw/infl.txt
+#	modified:   WordsCocktail/res/values/strings.xml
+#	new file:   WordsCocktail/src/com/patrupopa/wordscocktail/Dictionary.java
+#	modified:   WordsCocktail/src/com/patrupopa/wordscocktail/Game.java
+#	modified:   WordsCocktail/src/com/patrupopa/wordscocktail/MainActivity.java
+#	new file:   WordsCocktail/src/com/patrupopa/wordscocktail/Node.java
+#	new file:   filename.txt
+#	new file:   ivv2m0bp.0iw.txt
+#	new file:   xnc5d1co.goy.txt
+#
+
