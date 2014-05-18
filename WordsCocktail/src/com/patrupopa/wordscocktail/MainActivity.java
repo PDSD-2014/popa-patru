@@ -18,6 +18,8 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		//sets the main view, always the one with choice screen
 		setContentView(R.layout.choice_screen);
 
 		Button b = (Button) findViewById(R.id.one_player);
@@ -26,7 +28,18 @@ public class MainActivity extends ActionBarActivity {
 				startActivity(new Intent("com.popapatru.wordscocktail.action.NEW_GAME"));
 			}
 		});
-		
+		b = (Button) findViewById(R.id.about);
+		try
+		{
+			b.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					setContentView(R.layout.instructions);
+				}
+			});
+			
+		}catch (Exception e) {
+			// 
+		}
 //		if (savedInstanceState == null) {
 //			getSupportFragmentManager().beginTransaction()
 //					.add(R.id.container, new PlaceholderFragment()).commit();

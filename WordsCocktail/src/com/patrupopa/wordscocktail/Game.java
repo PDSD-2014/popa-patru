@@ -1,16 +1,35 @@
 package com.patrupopa.wordscocktail;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Random;
 
 
+
+
+
+
+
+
+
+
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 
+
+import android.util.Log;
 
 import com.patrupopa.wordscocktail.Game.Status;
 
@@ -25,6 +44,8 @@ public class Game implements Counter {
 		FINISHED 
 	}
 
+	private static final String TAG = "Game.java";
+
 	private Status _status;
 	private Board _board;
 	private int _wordCounter;
@@ -38,7 +59,8 @@ public class Game implements Counter {
 	private ArrayList<String> goodWords;
 	private ArrayList<LetterProb> alphabet;
 	private long _startTime; 
-
+	Dictionary _trie;
+	
 	public Game(PlaySingleGame playSingleGame, Bundle bun) {
 		// TODO Auto-generated constructor stub
 	}
@@ -52,14 +74,81 @@ public class Game implements Counter {
 		setMinWordLength(3);
 		setTimeLimit(60);
 		alphabet = new ArrayList<LetterProb>();
+		if( _trie == null)
+			loadDictionary();
 		generateBoard();
 		goodWords = new ArrayList<String>();
-		
+		_minWordLength = 3;
 
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
 	}
+	
+public Game(Context c, SharedPreferences preferences) {
+		
+		_context = c;
+		setStatus(Status.STARTING);
+		setWordCounter(0);
+		setBoardSize(16);
+		setMinWordLength(3);
+		//in seconds
+		setTimeLimit(60);
+		alphabet = new ArrayList<LetterProb>();
+		//do not instantiate the dictionary several times
+		if( _trie == null)
+			loadDictionary();
+		generateBoard();
+		goodWords = new ArrayList<String>();
+		_minWordLength = 3;
+		//TODO the size of the board could be variable, or 
+		//you could set the time limit , or you could set the dictionary
+		//setPreferences(preferences);
+	}
+
+	private void loadDictionary() {
+	// TODO Auto-generated method stub
+		Log.d(TAG, "Loading dictionary...");
+        InputStream inputStream = _context.getResources().openRawResource(R.raw.infl);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        _trie = new Dictionary();
+        
+   
+        
+        try {
+            String line;
+            try {
+				while ((line = reader.readLine()) != null) 
+				{
+				    String[] strings = line.split(" ");
+				    
+				    if( strings[0].length() < 2 )
+			    		continue;
+				    boolean result = _trie.insert(strings[0].trim());
+				    //out.write(strings[0].trim());
+				    
+				    if ( result  == false ) 
+				    {
+				        Log.e(TAG, "unable to add word: " + strings[0].trim());
+				    }
+			    
+				}
+				//out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        } finally {
+            try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        Log.d(TAG, "DONE loading words.");
+	
+}
 
 	private void generateBoard() {
 		// TODO Auto-generated method stub
@@ -135,7 +224,7 @@ public class Game implements Counter {
 			b[newPos] = aux;
 		}
 		
-		
+		//hard coded version
 		//String[] b = {"C","A","R","D","D","I","A","N","I","R","I","N","B","A","N","I"};
 		
 		if( b.length < getBoardSize())
@@ -150,22 +239,7 @@ public class Game implements Counter {
 		
 		return _board;
 	}
-	public Game(Context c, SharedPreferences preferences) {
-		
-		_context = c;
-		setStatus(Status.STARTING);
-		setWordCounter(0);
-		setBoardSize(16);
-		setMinWordLength(3);
-		//in seconds
-		setTimeLimit(60);
-		generateBoard();
-		goodWords = new ArrayList<String>();
-		alphabet = new ArrayList<LetterProb>();
-		//TODO the size of the board could be variable, or 
-		//you could set the time limit , or you could set the dictionary
-		//setPreferences(preferences);
-	}
+	
 	
 	private void setMinWordLength(int i) {
 		// TODO Auto-generated method stub
@@ -262,6 +336,7 @@ public class Game implements Counter {
 		return null;
 	}
 
+	//receives a string and checkes whether or not this is a word from the dictionary
 	public boolean goodWord(String result) {
 		// TODO Auto-generated method stub
 		return true;

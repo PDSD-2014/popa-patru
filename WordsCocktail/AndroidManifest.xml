@@ -43,6 +43,12 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
         </activity>
+        <activity android:name="Instructions">
+			<intent-filter>
+				<action android:name="com.popapatru.wordscocktail.action.INSTR" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+        </activity>
 		
     </application>
 
