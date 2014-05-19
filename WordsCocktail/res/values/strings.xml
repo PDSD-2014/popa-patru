@@ -2,19 +2,16 @@
 <resources>
 
     <string name="app_name">Words Cocktail</string>
-   	<string name="multiplayer">Play with others</string>
+    <string name="multiplayer">Play with others</string>
     <string name="one_player">Train yourself!</string>
     <string name="restore_game">Restore Game</string>
-	<string name="prefs">Settings</string>
-
-	<string name="dialog_no_saved">There is no game saved.  
+    <string name="prefs">Settings</string>
+    <string name="dialog_no_saved">There is no game saved.  
 	    If you can read this message, something is likely broken.</string>
-	<string name="dialog_ok">Menu</string>
-	<string name="dialog_cancel">Cancel</string>
-
-	<string name="dialog_help">Instructions</string>
-	<string name="actual_help">
-	Find as many correct english words as fast as you possibly can.
+    <string name="dialog_ok">Menu</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_help">Instructions</string>
+    <string name="actual_help">	Find as many correct english words as fast as you possibly can.
 	Touch the screen and move your finger to adjacent squares to spell out words.
 	The default time is two minutes, but you can always extend it by going to 
 	Preferences.
@@ -23,26 +20,24 @@
 	\nWords must be at least three letters long.
 	Words that have three or four letters are worth one point.  
 	Longer words are worth more points.  
-	Proper nouns are not taken into account.
-	</string>
+	Proper nouns are not taken into account.</string>
+    <string name="dialog_loading">Loading</string>
 
-	<string name="dialog_loading">Loading</string>
+    <!-- these are the items from the menu -->
+    <string name="rotate_board">Rotate Board</string>
+    <string name="save_game">Save Game</string>
+    <string name="end_game">Quit</string>
+    <string name="button_ok">Got it!</string>
+    <string name="dialog_dict_select">Select Dictionary</string>
+    <string name="show_missed">Show Missed Words</string>
+    <string name="hide_missed">Hide Missed Words</string>
+    <string name="show_unique">Show Unique Words</string>
+    <string name="hide_unique">Hide Unique Words</string>
 
-	<!-- these are the items from the menu -->
-	<string name="rotate_board">Rotate Board</string>
-	<string name="save_game">Save Game</string>
-	<string name="end_game">Quit</string>
-	<string name="button_ok">Got it!</string>
-
-	<string name="dialog_dict_select">Select Dictionary</string>
-
-	<string name="show_missed">Show Missed Words</string>
-	<string name="hide_missed">Hide Missed Words</string>
-
-	<string name="show_unique">Show Unique Words</string>
-	<string name="hide_unique">Hide Unique Words</string>
-	
-	<!-- this is what happens if you press the image -->
-	<string name="description_logo">Our absolutely awesome log for this Application></string>
+    <!-- this is what happens if you press the image -->
+    <string name="description_logo">Our absolutely awesome log for this Application></string>
+    <string name="title_activity_play_with_others">PlayWithOthers</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 
 </resources>

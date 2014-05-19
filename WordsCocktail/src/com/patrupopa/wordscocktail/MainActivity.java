@@ -22,12 +22,23 @@ public class MainActivity extends ActionBarActivity {
 		//sets the main view, always the one with choice screen
 		setContentView(R.layout.choice_screen);
 
-		Button b = (Button) findViewById(R.id.one_player);
+		// multiplayer
+		Button b = (Button) findViewById(R.id.multiplayer);
+		b.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent("com.popapatru.wordscocktail.action.MULTIPLAYER_GAME"));
+			}
+		});
+		
+		// single player
+		b = (Button) findViewById(R.id.one_player);
 		b.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent("com.popapatru.wordscocktail.action.NEW_GAME"));
 			}
 		});
+		
+		// instructions
 		b = (Button) findViewById(R.id.about);
 		try
 		{
