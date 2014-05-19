@@ -69,7 +69,7 @@ public class Game implements Counter {
 		// TODO Auto-generated constructor stub
 		_context = c;
 		setStatus(Status.STARTING);
-		setWordCounter(0);
+		
 		setBoardSize(16);
 		setMinWordLength(3);
 		setTimeLimit(60);
@@ -80,7 +80,8 @@ public class Game implements Counter {
 		generateBoard();
 		goodWords = new ArrayList<String>();
 		_minWordLength = 3;
-
+		_wordCounter = -1;
+		increaseWordCounter();
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -90,7 +91,7 @@ public Game(Context c, SharedPreferences preferences) {
 		
 		_context = c;
 		setStatus(Status.STARTING);
-		setWordCounter(0);
+		
 		setBoardSize(16);
 		setMinWordLength(3);
 		//in seconds
@@ -102,6 +103,8 @@ public Game(Context c, SharedPreferences preferences) {
 		generateBoard();
 		goodWords = new ArrayList<String>();
 		_minWordLength = 3;
+		_wordCounter = -1;
+		increaseWordCounter();
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -271,10 +274,10 @@ public Game(Context c, SharedPreferences preferences) {
 		
 	}
 
-	private void setWordCounter(int i) {
+	public void increaseWordCounter() {
 		// TODO Auto-generated method stub
 		
-		_wordCounter = i;
+		_wordCounter++;
 	}
 
 	public void setStatus(Status status)
@@ -333,15 +336,16 @@ public Game(Context c, SharedPreferences preferences) {
 
 	public String getWordCount() {
 		// TODO Auto-generated method stub
-		return null;
+		return _wordCounter + "";
 	}
 
 	public String getMaxWordCount() {
 		// TODO Auto-generated method stub
+		//how many words could you form with this grid ??
 		return null;
 	}
 
-	//receives a string and checkes whether or not this is a word from the dictionary
+	//receives a string and checks whether or not this is a word from the dictionary
 	public boolean goodWord(String result) {
 		// TODO Auto-generated method stub
 		if( _trie == null || result.length() < 2 )
