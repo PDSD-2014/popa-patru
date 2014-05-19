@@ -65,7 +65,7 @@ public class Game implements Counter {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Game(Context c,Dictionary trie) {
+	public Game(Context c, Dictionary trie) {
 		// TODO Auto-generated constructor stub
 		_context = c;
 		setStatus(Status.STARTING);
