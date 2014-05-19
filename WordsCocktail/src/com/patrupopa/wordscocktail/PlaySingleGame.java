@@ -3,6 +3,7 @@ package com.patrupopa.wordscocktail;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +49,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 			if(action.equals("com.popapatru.wordscocktail.action.RESTORE_GAME")) {
 				//restoreGame();
 			} else if(action.equals("com.popapatru.wordscocktail.action.NEW_GAME")) {
+				System.gc();
 				loadDictionary();
 				newSingleGame();
 			} else {
@@ -157,43 +159,73 @@ public class PlaySingleGame extends Activity implements Stopper {
 			return;
 		}
 	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+	}
 	private void loadDictionary() {
 		// TODO Auto-generated method stub
 			Log.d(TAG, "Loading dictionary...");
 	        InputStream inputStream = getResources().openRawResource(R.raw.dictionary);
-	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	        int SIZE = 64000;
+	        byte[] barray = new byte[SIZE];
 	        _trie = new Dictionary();
 	        
+	        long diff = 0 ; 
 	        try {
 	            String line;
 	            //int counter = 0 ;
 	            try {
-					while ((line = reader.readLine()) != null /*&& counter < 1000*/ ) 
+	            	long currentTime = System.currentTimeMillis();
+//					while ((line = reader.readLine()) != null /*&& counter < 1000*/ ) 
+//					{
+//					    String[] strings = line.split(" ");
+//					    
+//					    if( strings[0].length() < 2 )
+//				    		continue;
+//					    boolean result = _trie.insert(strings[0].trim());
+//					    if ( result  == false ) 
+//					    {
+//					        Log.e(TAG, "unable to add word: " + strings[0].trim());
+//					    }
+//				    
+//					    //counter++;
+//					}
+					
+					//second more performant method
+	            	String s = null;
+	            	//String[] strings = null;
+	            	
+					while ( (inputStream.read( barray, 0, SIZE )) != -1 )
 					{
-					    String[] strings = line.split(" ");
+						s = new String(barray);
+						
+//					    strings = s.split("\r\n");
+//					    for( int i = 0 ; i < strings.length; ++i )
+//					    {
+//					    	if( strings[i].length() < 2 )
+//					    		continue;
+//					    	_trie.insert(strings[i]);
+//					    }
 					    
-					    if( strings[0].length() < 2 )
-				    		continue;
-					    boolean result = _trie.insert(strings[0].trim());
-					    if ( result  == false ) 
-					    {
-					        Log.e(TAG, "unable to add word: " + strings[0].trim());
-					    }
-				    
-					    //counter++;
+					    int pos = 0, end;
+					    String aux = null;
+			            while ((end = s.indexOf("\r\n", pos)) >= 0) {
+			                aux = s.substring(pos,end).trim();
+			            	int length = aux.length(); 
+			            	if( length > 1 && length <= 8 )
+			            		_trie.insert(aux);
+			                pos = end + 1;
+			            }
 					}
+					diff = System.currentTimeMillis() - currentTime;
 					
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        } finally {
-	            try {
-					reader.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 	        }
 	        Log.d(TAG, "DONE loading words.");
 		
