@@ -24,6 +24,7 @@ public class PlayView extends View implements Worker {
 	private int _redrawFreq;
 	public static final int REDRAW_DELAY = 15;
 	private boolean _goodWord;
+	private static final int FONT_SIZE = 20;
 	public PlayView( Context context , Game game) {
 		super(context);
 		_game = game;
@@ -84,6 +85,8 @@ public class PlayView extends View implements Worker {
 		switch(touchAction)
 		{
 			case MotionEvent.ACTION_DOWN :
+				if( _fingerTouch.getPositions().size() > 0 )
+					return false;
 			case MotionEvent.ACTION_MOVE:
 				_fingerTouch.Touching(event.getX(), event.getY());
 				break;
@@ -123,6 +126,7 @@ public class PlayView extends View implements Worker {
 		if( _goodWord == true )
 		{
 			green.setARGB(255, 0, 255, 0);
+			_game.incrementScore(_goodCells.size());
 		}
 		else 
 		{
@@ -158,11 +162,10 @@ public class PlayView extends View implements Worker {
 				"fonts/Roboto.ttf");
 		color.setTypeface(font);
 		color.setARGB(255,255,255,255);
-		color.setTextSize(15);
+		color.setTextSize(FONT_SIZE);
 		
-		canvas.drawText("Score:",12*PADDING,getMeasuredHeight() - 3*PADDING,color);
-		canvas.drawText(_game.getWordCount() + "/" + _game.getMaxWordCount(),
-				12*PADDING,getMeasuredHeight() - PADDING,color);
+		canvas.drawText("Score:",                     24*PADDING,getMeasuredHeight() - 3*PADDING,color);
+		canvas.drawText(_game.getCurrentScore() + "", 26*PADDING,getMeasuredHeight() -   PADDING,color);
 	}
 
 	private void showWordCount(Canvas canvas) {
@@ -174,11 +177,10 @@ public class PlayView extends View implements Worker {
 				"fonts/Roboto.ttf");
 		color.setTypeface(font);
 		color.setARGB(255,255,255,255);
-		color.setTextSize(15);
+		color.setTextSize(FONT_SIZE);
 		
-		canvas.drawText("Words:",5*PADDING,getMeasuredHeight() - 3*PADDING,color);
-		canvas.drawText( _game.getWordCount()+"/" + _game.getMaxWordCount(),
-				5*PADDING,getMeasuredHeight() - PADDING,color);		
+		canvas.drawText( "Words:",                  12*PADDING,getMeasuredHeight() - 3*PADDING,color);
+		canvas.drawText( _game.getWordCount() + "",	14*PADDING,getMeasuredHeight() -   PADDING,color);		
 	}
 
 	private void showTimer(Canvas canvas) {
@@ -201,9 +203,9 @@ public class PlayView extends View implements Worker {
 		int secs = _remainingTime % 60;
 
 		String time = "" + mins + ":"+ secs;
-		color.setTextSize(15);
-		canvas.drawText("Time:", PADDING, getMeasuredHeight() - 3 * PADDING, color);
-		canvas.drawText(time, PADDING, getMeasuredHeight() - PADDING, color);
+		color.setTextSize(FONT_SIZE);
+		canvas.drawText("Time:",                PADDING, getMeasuredHeight() - 3 * PADDING, color);
+		canvas.drawText(time,                   2*PADDING, getMeasuredHeight() -     PADDING, color);
 	}
 
 	private void showGrid(Canvas canvas) {

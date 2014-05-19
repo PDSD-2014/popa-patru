@@ -11,7 +11,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Random;
+
 
 
 
@@ -49,6 +51,7 @@ public class Game implements Counter {
 	private Status _status;
 	private Board _board;
 	private int _wordCounter;
+	private int _totalWords;
 	private Context _context;
 	private int _boardSize;
 	
@@ -60,7 +63,7 @@ public class Game implements Counter {
 	private ArrayList<LetterProb> alphabet;
 	private long _startTime; 
 	Dictionary _trie;
-	
+	private int _currentScore ;
 	public Game(PlaySingleGame playSingleGame, Bundle bun) {
 		// TODO Auto-generated constructor stub
 	}
@@ -79,9 +82,13 @@ public class Game implements Counter {
 		_trie = trie;
 		generateBoard();
 		goodWords = new ArrayList<String>();
+		
 		_minWordLength = 3;
 		_wordCounter = -1;
+		_totalWords = 0 ; 
+		//computeMaxWordCount();
 		increaseWordCounter();
+		_currentScore = 0 ; 
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -104,7 +111,10 @@ public Game(Context c, SharedPreferences preferences) {
 		goodWords = new ArrayList<String>();
 		_minWordLength = 3;
 		_wordCounter = -1;
+		_totalWords = 0 ;
+		computeMaxWordCount();
 		increaseWordCounter();
+		_currentScore = 0 ; 
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -338,11 +348,28 @@ public Game(Context c, SharedPreferences preferences) {
 		// TODO Auto-generated method stub
 		return _wordCounter + "";
 	}
-
 	public String getMaxWordCount() {
+		return _totalWords + "";
+	}
+	
+	
+	private void computeMaxWordCount() {
 		// TODO Auto-generated method stub
 		//how many words could you form with this grid ??
-		return null;
+		for ( int i = 0; i < 16; i++ )
+		{
+			LinkedList<Pair> visited = new LinkedList<Pair>();
+			Pair p = new Pair(i/4, i%4);
+			visited.add(p);
+			for (int  j = 0 ; j < 16 ; j++)
+			{
+				if( i == j )
+					continue;
+				Pair endNode = new Pair(j/4, j%4);
+				BreadthFirst(visited, endNode);	
+			}
+		}
+		
 	}
 
 	//receives a string and checks whether or not this is a word from the dictionary
@@ -355,5 +382,143 @@ public Game(Context c, SharedPreferences preferences) {
 		return _trie.search(result);
 	}
 
+	//visited will initially contain first node, the start node
+	private void BreadthFirst(LinkedList<Pair> visited , Pair endNode) 
+	{
+		if( visited.size() > 5 )
+			return;
+	    Pair last = visited.getLast();
+		LinkedList<Pair> nodes = adjacentNodes(last);
+		int size = nodes.size();
+	    // Examine adjacent nodes only if visited is smaller than
+		
+		    for(Pair node : nodes) 
+		    {
+		        if (visited.contains(node))
+		        {
+		            continue;
+		        }
+	
+		        if ( node.equals(endNode)  )
+		        {
+		            visited.addLast(node);
+	
+		            printPath(visited);
+	
+		            visited.removeLast();
+	
+		            break;
+		         }
+		     }
+		
+	    // In breadth-first, recursion needs to come after visiting adjacent nodes
+	    for (Pair node : nodes)
+	    {      
+	        if( visited.contains(node) || node.equals(endNode) ||  visited.size() > 5 )
+	        {
+	            continue;
+	        }
+
+	        visited.addLast(node);
+
+	        // Recursion
+	        BreadthFirst(visited,endNode);
+
+	        visited.removeLast();
+	    }
+	}
+
+	private void printPath(LinkedList<Pair> visited) {
+		// TODO Auto-generated method stub
+		String path = "";
+		Log.d(TAG, "In printing path.........");
+		for (Pair node: visited)
+		{
+			int x  = node.GetX();
+			int y = node.GetY();
+			if (x >= 0 && x < 4 && y >= 0 && y < 4 )
+			{
+				path += _board.getElementAt(node.GetX(), node.GetY());
+				path += "";
+			}
+			else 
+			{
+				Log.d(TAG, "Caution x or y is out of limits");
+			}
+		}
+		if(goodWord(path.toLowerCase()))
+		{
+			_totalWords++;
+			goodWords.add(path);
+		}
+		Log.d(TAG, path);
+		
+	}
+
+	//will return maximum 8 neighbours
+	private LinkedList<Pair> adjacentNodes(Pair last) {
+		// TODO Auto-generated method stub
+		LinkedList<Pair> result = new LinkedList<Pair>(); 
+		int x = last.GetX();
+		int y = last.GetY();
+		if( x - 1 >= 0  )
+		{
+			Pair p = new Pair(x-1,y);
+			result.add(p);
+			
+			if( y-1 >= 0 )
+			{
+				p = new Pair(x-1,y-1);
+				result.add(p);
+				
+			}
+			if ( y+1 < 4 )
+			{
+				p = new Pair(x-1,y+1);
+				result.add(p);
+				
+			}
+		}
+		if( x + 1 < 4  )
+		{
+			Pair p = new Pair(x+1,y);
+			result.add(p);
+			if( y-1 >= 0 )
+			{
+				p = new Pair(x+1,y-1);
+				result.add(p);
+				
+			}
+			if ( y+1 < 4 )
+			{
+				p = new Pair(x+1,y+1);
+				result.add(p);
+				
+			}
+		}
+
+		if( y+1 < 4  )
+		{
+			Pair p = new Pair(x,y+1);
+			result.add(p);
+		}
+		if( y-1 >= 0  )
+		{
+			Pair p = new Pair(x,y-1);
+			result.add(p);
+			
+		}
+		return result;
+	}
+	
+	public int getCurrentScore()
+	{
+		return _currentScore;
+	}
+	
+	public void incrementScore(int length)
+	{
+		_currentScore += length*length;
+	}
 	
 }

@@ -193,7 +193,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 					//second more performant method
 	            	String s = null;
 	            	//String[] strings = null;
-	            	
+	            	//remove false from here!!!!!!
 					while ( (inputStream.read( barray, 0, SIZE )) != -1 )
 					{
 						s = new String(barray);
@@ -211,7 +211,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 			            while ((end = s.indexOf("\r\n", pos)) >= 0) {
 			                aux = s.substring(pos,end).trim();
 			            	int length = aux.length(); 
-			            	if( length > 1 && length <= 8 )
+			            	if( length > 1 && length <= 6 )
 			            		_trie.insert(aux);
 			                pos = end + 1;
 			            }
