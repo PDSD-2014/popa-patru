@@ -25,6 +25,7 @@ import java.util.Random;
 
 
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -60,10 +61,17 @@ public class Game implements Counter {
 	
 	private int _minWordLength;
 	private ArrayList<String> goodWords;
+	private ArrayList<String> _guessedWords;
 	private ArrayList<LetterProb> alphabet;
 	private long _startTime; 
 	Dictionary _trie;
 	private int _currentScore ;
+	String _foundWords ;
+	String _badWords ;
+	String _avoidDuplicates;
+	//to change
+	private final static int _timeLimit = 60;
+	
 	public Game(PlaySingleGame playSingleGame, Bundle bun) {
 		// TODO Auto-generated constructor stub
 	}
@@ -75,7 +83,7 @@ public class Game implements Counter {
 		
 		setBoardSize(16);
 		setMinWordLength(3);
-		setTimeLimit(60);
+		setTimeLimit(_timeLimit);
 		alphabet = new ArrayList<LetterProb>();
 //		if( _trie == null)
 //			loadDictionary();
@@ -89,6 +97,10 @@ public class Game implements Counter {
 		//computeMaxWordCount();
 		increaseWordCounter();
 		_currentScore = 0 ; 
+		_foundWords  = "";
+		_badWords  = "";
+		_avoidDuplicates = "";
+		_guessedWords = new ArrayList<String>();
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -102,7 +114,7 @@ public Game(Context c, SharedPreferences preferences) {
 		setBoardSize(16);
 		setMinWordLength(3);
 		//in seconds
-		setTimeLimit(60);
+		setTimeLimit(_timeLimit);
 		alphabet = new ArrayList<LetterProb>();
 		//do not instantiate the dictionary several times
 //		if( _trie == null)
@@ -115,6 +127,10 @@ public Game(Context c, SharedPreferences preferences) {
 		computeMaxWordCount();
 		increaseWordCounter();
 		_currentScore = 0 ; 
+		_foundWords = "";
+		_badWords  = "";
+		_avoidDuplicates = "";
+		_guessedWords = new ArrayList<String>();
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
@@ -520,5 +536,26 @@ public Game(Context c, SharedPreferences preferences) {
 	{
 		_currentScore += length*length;
 	}
+	public void save(Bundle bun) {
+
+		bun.putString("words",_foundWords);
+		bun.putString("badWords",_badWords);
+		bun.putInt("wordCount",_wordCounter);
+		bun.putInt("score",_currentScore);
+	}
+	public void appendToWordsFound(String toAppend)
+	{
+		_foundWords += toAppend + "\n";
+		_guessedWords.add(toAppend);
+		
+	}
+	public void appendToBadWords(String toAppend)
+	{
+		_badWords += toAppend + "\n";
+	}
 	
+	public boolean isAlready(String word)
+	{
+		return _guessedWords.contains(word);
+	}
 }

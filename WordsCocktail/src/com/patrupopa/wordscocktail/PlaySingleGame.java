@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import com.patrupopa.wordscocktail.Game.Status;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.util.Log;
@@ -142,6 +143,15 @@ public class PlaySingleGame extends Activity implements Stopper {
 		//stop the thread
 		_thread.exit();
 		//give the control to the score intent, to be implemented
+		Bundle bun = new Bundle();
+		_game.save(bun);
+		Intent scoreIntent = new Intent("com.popapatru.wordscocktail.action.FINAL_SCORE");
+		
+		//and then will get it from here
+		scoreIntent.putExtras(bun);
+
+		startActivity(scoreIntent);
+		finish();
 	}
 	
 	@Override

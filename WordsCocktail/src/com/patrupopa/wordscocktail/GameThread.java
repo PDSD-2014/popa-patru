@@ -37,7 +37,7 @@ public class GameThread implements Runnable{
 			w.timer(time);
 		}
 
-		if ( time < 0 ) {
+		if ( time <= 0 ) {
 			if( _stopper != null) {
 				_stopper.stopEvent();
 			}

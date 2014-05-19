@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#0f4a00"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<LinearLayout 
+    	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:background="#0f4a00"
+		android:id="@+id/good_words"
+    	>
+	
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+		>
+
+			<TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1.0"
+			    android:text="Score:"
+			    android:textColor="#ffffff"
+			    android:textSize="16px" />
+
+			<TextView android:id="@+id/score_points"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="12px"
+				android:textColor="#ffffff"
+				android:text="" />
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+		>
+
+			<TextView
+			    android:layout_width="fill_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="1.0"
+			    android:text="Words:"
+			    android:textColor="#ffffff"
+			    android:textSize="16px" />
+
+			<TextView android:id="@+id/score_words"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="12px"
+				android:textColor="#ffffff"
+				android:text="" />
+		</LinearLayout>
+
+		
+		<ScrollView android:id="@+id/word_list" 
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1.0"
+			android:orientation="vertical"
+			android:scrollbarAlwaysDrawVerticalTrack="true"
+		/>
+
+		<Button android:id="@+id/close_score"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/button_ok"
+			android:background="@drawable/general_button"
+        	style="@style/GeneralButton" 
+			/>
+	
+	</LinearLayout>
+
+</FrameLayout>
+
+

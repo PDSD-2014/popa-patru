@@ -95,15 +95,17 @@ public class PlayView extends View implements Worker {
 				String result = _fingerTouch.NotTouching(event.getX(), event.getY());
 				if( result == null )
 					break;
-				if( _game.goodWord(result.toLowerCase()) == true )
+				if( _game.goodWord(result.toLowerCase()) == true && _game.isAlready(result) == false)
 				{
 					//_goodCells.addAll(_fingerTouch.getPositions());
 					_goodWord = true;
 					_game.increaseWordCounter();
+					_game.appendToWordsFound(result);
 					//invalidate();
 				}
 				else
 				{
+					_game.appendToBadWords(result);
 					_goodWord = false;
 				}
 				_goodCells.addAll(_fingerTouch.getPositions());
@@ -162,7 +164,10 @@ public class PlayView extends View implements Worker {
 				"fonts/Roboto.ttf");
 		color.setTypeface(font);
 		color.setARGB(255,255,255,255);
-		color.setTextSize(FONT_SIZE);
+		//setting text size
+		float cellWidth = getMeasuredWidth()/16;
+		
+		color.setTextSize(cellWidth);
 		
 		canvas.drawText("Score:",                     24*PADDING,getMeasuredHeight() - 3*PADDING,color);
 		canvas.drawText(_game.getCurrentScore() + "", 26*PADDING,getMeasuredHeight() -   PADDING,color);
@@ -177,7 +182,8 @@ public class PlayView extends View implements Worker {
 				"fonts/Roboto.ttf");
 		color.setTypeface(font);
 		color.setARGB(255,255,255,255);
-		color.setTextSize(FONT_SIZE);
+		float textSize = getMeasuredWidth()/16;	
+		color.setTextSize(textSize);
 		
 		canvas.drawText( "Words:",                  12*PADDING,getMeasuredHeight() - 3*PADDING,color);
 		canvas.drawText( _game.getWordCount() + "",	14*PADDING,getMeasuredHeight() -   PADDING,color);		
@@ -203,7 +209,8 @@ public class PlayView extends View implements Worker {
 		int secs = _remainingTime % 60;
 
 		String time = "" + mins + ":"+ secs;
-		color.setTextSize(FONT_SIZE);
+		float textSize = getMeasuredWidth()/16;
+		color.setTextSize(textSize);
 		canvas.drawText("Time:",                PADDING, getMeasuredHeight() - 3 * PADDING, color);
 		canvas.drawText(time,                   2*PADDING, getMeasuredHeight() -     PADDING, color);
 	}
@@ -262,7 +269,7 @@ public class PlayView extends View implements Worker {
 		dark.setARGB(255, 15, 74, 0);
 		dark.setTextAlign(Paint.Align.CENTER);
 		float cellWidth = (Math.min(getMeasuredHeight(), getMeasuredWidth()) - PADDING);
-		cellWidth = cellWidth/(float)_height;	
+		cellWidth = cellWidth/(float)_height;
 		dark.setTextSize(cellWidth / 4 * 3);
 
 		Typeface font = Typeface.createFromAsset(getContext().getAssets(), 
