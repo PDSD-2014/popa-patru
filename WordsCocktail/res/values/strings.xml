@@ -6,6 +6,7 @@
     <string name="one_player">Train yourself!</string>
     <string name="restore_game">Restore Game</string>
     <string name="prefs">Settings</string>
+    <string name="loading">Words Cocktail is loading...</string>
     <string name="dialog_no_saved">There is no game saved.  
 	    If you can read this message, something is likely broken.</string>
     <string name="dialog_ok">Menu</string>

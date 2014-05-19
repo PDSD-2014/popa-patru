@@ -22,6 +22,7 @@ public class PlayWithOthers extends Activity {
 		if (savedInstanceState == null) {
 
 		}
+		setContentView(R.layout.loading);
 	}
 
 	@Override
