@@ -96,6 +96,7 @@ public class PlayView extends View implements Worker {
 				{
 					//_goodCells.addAll(_fingerTouch.getPositions());
 					_goodWord = true;
+					_game.increaseWordCounter();
 					//invalidate();
 				}
 				else
