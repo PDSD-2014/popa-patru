@@ -33,6 +33,9 @@ public class PlaySingleGame extends Activity implements Stopper {
     @Override
     public void onCreate(Bundle savedInstanceState) {
      	super.onCreate(savedInstanceState);
+     	
+     	setContentView(R.layout.loading);
+     	
 		if(savedInstanceState != null) {
 			try {
 				restoreGame(savedInstanceState);

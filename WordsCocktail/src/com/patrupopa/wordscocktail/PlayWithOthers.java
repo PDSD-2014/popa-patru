@@ -1,10 +1,14 @@
 package com.patrupopa.wordscocktail;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +18,10 @@ import android.os.Build;
 
 public class PlayWithOthers extends Activity {
 
+	private String TAG = "PlayWithOthers";
+	private OnlineGame onlinegame;
+	Dictionary _trie;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -21,6 +29,15 @@ public class PlayWithOthers extends Activity {
 
 		if (savedInstanceState == null) {
 
+		}
+		setContentView(R.layout.loading);
+		try {
+			//String url = getIntent().getData().toString();
+			System.gc();
+			loadDictionary();
+			newGame();
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
 		}
 	}
 
@@ -42,6 +59,49 @@ public class PlayWithOthers extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void newGame() throws Exception {
+		onlinegame = new OnlineGame(this, _trie);
+
+	}
+	
+	private void loadDictionary() {
+		// TODO Auto-generated method stub
+			Log.d(TAG, "Loading dictionary...");
+	        InputStream inputStream = getResources().openRawResource(R.raw.dictionary);
+	        int SIZE = 64000;
+	        byte[] barray = new byte[SIZE];
+	        _trie = new Dictionary();
+	        
+	        long diff = 0 ; 
+	        try {
+	            String line;
+	            try {
+	            	long currentTime = System.currentTimeMillis();
+	            	String s = null;
+					while ( (inputStream.read( barray, 0, SIZE )) != -1 )
+					{
+						s = new String(barray);
+					    int pos = 0, end;
+					    String aux = null;
+			            while ((end = s.indexOf("\r\n", pos)) >= 0) {
+			                aux = s.substring(pos,end).trim();
+			            	int length = aux.length(); 
+			            	if( length > 1 && length <= 8 )
+			            		_trie.insert(aux);
+			                pos = end + 1;
+			            }
+					}
+					diff = System.currentTimeMillis() - currentTime;
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        } finally {
+	        }
+	        Log.d(TAG, "DONE loading words.");
 	}
 
 }

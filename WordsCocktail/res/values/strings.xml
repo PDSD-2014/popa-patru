@@ -6,6 +6,7 @@
     <string name="one_player">Train yourself!</string>
     <string name="restore_game">Restore Game</string>
     <string name="prefs">Settings</string>
+    <string name="loading">Words Cocktail is loading...</string>
     <string name="dialog_no_saved">There is no game saved.  
 	    If you can read this message, something is likely broken.</string>
     <string name="dialog_ok">Menu</string>
@@ -39,5 +40,6 @@
     <string name="title_activity_play_with_others">PlayWithOthers</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
 
 </resources>
