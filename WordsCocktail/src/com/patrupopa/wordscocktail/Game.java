@@ -15,17 +15,6 @@ import java.util.LinkedList;
 import java.util.Random;
 
 
-
-
-
-
-
-
-
-
-
-
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -59,16 +48,18 @@ public class Game implements Counter {
 	private long _timeTicking;
 	private int _maxTime;
 	
-	private int _minWordLength;
 	private ArrayList<String> goodWords;
 	private ArrayList<String> _guessedWords;
 	private ArrayList<LetterProb> alphabet;
 	private long _startTime; 
-	Dictionary _trie;
+	
 	private int _currentScore ;
 	String _foundWords ;
 	String _badWords ;
-	String _avoidDuplicates;
+	
+	Dictionary _trie;
+	
+	
 	//to change
 	private final static int _timeLimit = 60;
 	
@@ -82,7 +73,6 @@ public class Game implements Counter {
 		setStatus(Status.STARTING);
 		
 		setBoardSize(16);
-		setMinWordLength(3);
 		setTimeLimit(_timeLimit);
 		alphabet = new ArrayList<LetterProb>();
 //		if( _trie == null)
@@ -91,7 +81,6 @@ public class Game implements Counter {
 		generateBoard();
 		goodWords = new ArrayList<String>();
 		
-		_minWordLength = 3;
 		_wordCounter = -1;
 		_totalWords = 0 ; 
 		//computeMaxWordCount();
@@ -99,41 +88,59 @@ public class Game implements Counter {
 		_currentScore = 0 ; 
 		_foundWords  = "";
 		_badWords  = "";
-		_avoidDuplicates = "";
 		_guessedWords = new ArrayList<String>();
+
 		//TODO the size of the board could be variable, or 
 		//you could set the time limit , or you could set the dictionary
 		//setPreferences(preferences);
 	}
 	
+	//this constructor is for when you want to restore game from preferences
 public Game(Context c, SharedPreferences preferences) {
 		
 		_context = c;
 		setStatus(Status.STARTING);
 		
-		setBoardSize(16);
-		setMinWordLength(3);
-		//in seconds
-		setTimeLimit(_timeLimit);
-		alphabet = new ArrayList<LetterProb>();
-		//do not instantiate the dictionary several times
-//		if( _trie == null)
-//			loadDictionary();
-		generateBoard();
+		setBoardSize(preferences.getInt("boardSize", 16));
+		
+		String [] board = preferences.getString("gameBoard", "").split(",");
+		
+		_board = new Board(board);
+		
+		_wordCounter = preferences.getInt("wordCount", 0);
+		_totalWords =  preferences.getInt("totalWords", 0);
+		_currentScore = preferences.getInt("score",0); 
+		_timeTicking = preferences.getLong("timeTicking", 0);
+		_startTime = preferences.getLong("startTime", 0);
+		_maxTime = preferences.getInt("maxTime", 0);
+		
+		String test = preferences.getString("goodWords", "");
+		String [] aux;
 		goodWords = new ArrayList<String>();
-		_minWordLength = 3;
-		_wordCounter = -1;
-		_totalWords = 0 ;
-		computeMaxWordCount();
-		increaseWordCounter();
-		_currentScore = 0 ; 
-		_foundWords = "";
-		_badWords  = "";
-		_avoidDuplicates = "";
+		if(test != "" )
+		{
+			aux = test.split(",");
+			
+			for(int i = 0 ; i< aux.length ; i++ )
+			{
+				goodWords.add(aux[i]);
+			}
+		}
+		test = preferences.getString("guessedWords", "");
 		_guessedWords = new ArrayList<String>();
-		//TODO the size of the board could be variable, or 
-		//you could set the time limit , or you could set the dictionary
-		//setPreferences(preferences);
+		if(test != "" )
+		{
+			aux = test.split(",");
+			
+			for(int i = 0 ; i< aux.length ; i++ )
+			{
+				_guessedWords.add(aux[i]);
+			}
+		}
+		
+		_foundWords = preferences.getString("words", null);
+		_badWords = preferences.getString("badWords", null);
+		
 	}
 
 	private void loadDictionary() {
@@ -275,11 +282,6 @@ public Game(Context c, SharedPreferences preferences) {
 	}
 	
 	
-	private void setMinWordLength(int i) {
-		// TODO Auto-generated method stub
-		_minWordLength = i;
-	}
-
 	//milliseconds
 	private void setTimeLimit(int i) {
 		// TODO Auto-generated method stub
@@ -536,6 +538,8 @@ public Game(Context c, SharedPreferences preferences) {
 	{
 		_currentScore += length*length;
 	}
+	
+	//saving game from Bundle
 	public void save(Bundle bun) {
 
 		bun.putString("words",_foundWords);
@@ -543,6 +547,37 @@ public Game(Context c, SharedPreferences preferences) {
 		bun.putInt("wordCount",_wordCounter);
 		bun.putInt("score",_currentScore);
 	}
+	//saving game from preferences editor, to databasae, in case of onPause()
+	public void save(SharedPreferences.Editor editor) {
+
+		String [] aux = _board.getBoard();
+		String b = "";
+		for(int i = 0 ; i < aux.length; i ++ )
+		{
+			b += aux[i] + ",";
+		}
+		editor.putString("gameBoard",b);
+		editor.putInt("wordCount",_wordCounter);
+		editor.putInt("totalWords",_totalWords);
+		editor.putInt("boardSize",_board.getSize());
+		editor.putLong("timeTicking",_timeTicking);
+		editor.putLong("startTime",_startTime);
+		editor.putInt("maxTime", (int)(_timeTicking *1000));
+		editor.putString("words",_foundWords);
+		editor.putString("badWords",_badWords);
+		editor.putInt("score",_currentScore);
+		b = "";
+		for(int i = 0 ; i < goodWords.size() ; i++)
+			b += goodWords.get(i) + ",";
+		editor.putString("goodWords", b );
+		b = "";
+		for(int i = 0 ; i < _guessedWords.size() ; i++)
+			b += _guessedWords.get(i) + ",";
+		editor.putString("guessedWords",b  );
+		editor.commit();
+	}
+
+	
 	public void appendToWordsFound(String toAppend)
 	{
 		_foundWords += toAppend + "\n";
@@ -557,5 +592,13 @@ public Game(Context c, SharedPreferences preferences) {
 	public boolean isAlready(String word)
 	{
 		return _guessedWords.contains(word);
+	}
+	
+	public void pause() 
+	{
+		if( _status == Game.Status.RUNNING )
+		{
+			_status = Game.Status.PAUSED; 
+		}
 	}
 }

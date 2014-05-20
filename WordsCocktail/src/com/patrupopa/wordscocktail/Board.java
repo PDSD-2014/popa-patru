@@ -16,7 +16,12 @@ public class Board {
 		_size = _width*_height;
 		
 	}
-	
+	public void setBoard(String [] b){
+		_board = b;
+	}
+	public String [] getBoard(){
+		return _board ;
+	}
 	public int getWidth()
 	{	
 		return _width;

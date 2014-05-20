@@ -21,10 +21,10 @@
 	Preferences.
 
 	\n\nScoring:
-	\nWords must be at least three letters long.
-	Words that have three or four letters are worth one point.  
-	Longer words are worth more points.  
-	Proper nouns are not taken into account.</string>
+	\nWords must be at least two letters long.
+	The score is calculated as length_word*length_word, so longer words are worth more points.  
+	Proper nouns are not taken into account.
+	Maximum length of a word is 6</string>
     <string name="dialog_loading">Loading</string>
 
     <!-- these are the items from the menu -->
@@ -44,6 +44,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Login</string>
-    <string name="title_activity_final_score">FinalScore</string>
+    <string name="title_activity_final_score">Final Score</string>
+    <string name="title_activity_instructions">Instructions</string>
 
 </resources>
