@@ -2,11 +2,13 @@ package com.patrupopa.wordscocktail;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +16,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.os.Build;
 
 public class PlayWithOthers extends Activity {
 
+	private Socket socket;
+    private static final int SERVERPORT = 28028;
+    private static final String SERVER_IP = "192.168.173.1";
+    
+	public String Name = "";
 	private String TAG = "PlayWithOthers";
 	private OnlineGame onlinegame;
 	Dictionary _trie;
@@ -31,6 +40,24 @@ public class PlayWithOthers extends Activity {
 
 		}
 		setContentView(R.layout.loading);
+		
+		if (Name == "") {
+			setContentView(R.layout.enter_name);
+			Button b = (Button) findViewById(R.id.get_name);
+			b.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					EditText editText = (EditText) findViewById(R.id.name);
+					if (editText.getText().length() > 0) {
+						Name = editText.getText().toString();
+						Log.d(TAG, "Name: " + Name);
+						
+						
+						setContentView(R.layout.waiting);
+					}
+				}
+			});
+		}
+		/*
 		try {
 			//String url = getIntent().getData().toString();
 			System.gc();
@@ -38,7 +65,7 @@ public class PlayWithOthers extends Activity {
 			newGame();
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
-		}
+		}*/
 	}
 
 	@Override
