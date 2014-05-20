@@ -1,8 +1,15 @@
 package com.patrupopa.wordscocktail;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -22,11 +29,14 @@ import android.os.Build;
 
 public class PlayWithOthers extends Activity {
 
-	private Socket socket;
-    private static final int SERVERPORT = 28028;
-    private static final String SERVER_IP = "192.168.173.1";
+	public Socket socket;
+	DataOutputStream out;
+	BufferedReader in;
+    public static final int SERVERPORT = 28028;
+    public static final String SERVER_IP = "192.168.173.1";
     
 	public String Name = "";
+	public int playerNo = 0;
 	private String TAG = "PlayWithOthers";
 	private OnlineGame onlinegame;
 	Dictionary _trie;
@@ -48,11 +58,24 @@ public class PlayWithOthers extends Activity {
 				public void onClick(View v) {
 					EditText editText = (EditText) findViewById(R.id.name);
 					if (editText.getText().length() > 0) {
+						// get user name
 						Name = editText.getText().toString();
 						Log.d(TAG, "Name: " + Name);
 						
+						// make server connection
+						connectToServer();
 						
 						setContentView(R.layout.waiting);
+						
+						if (playerNo > 1)
+							try {
+								newGame();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						else
+							setContentView(R.layout.waiting);
 					}
 				}
 			});
@@ -67,6 +90,94 @@ public class PlayWithOthers extends Activity {
 			Log.e(TAG, e.toString());
 		}*/
 	}
+	
+	private void connectToServer() {
+		Thread thread = new Thread(new Runnable() {
+			
+			private int getPlayerNo() {
+				int playerNo = 0;
+				try {
+					playerNo = Integer.parseInt(receiveFromServer());
+					sendToServer("ok");
+				} catch (Exception e) {
+					e.printStackTrace();
+					return 0;
+				}
+				return playerNo;
+			}
+			
+			private void sendUserName() {
+				sendToServer(Name);
+				try {
+					Name = receiveFromServer();
+					sendToServer("ok");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			private String receiveFromServer() {
+				String msg = null;
+				try { 
+					msg= in.readLine();
+					//System.out.println("received: " + msg);
+				} catch (Exception exception) {
+					exception.printStackTrace();
+					msg = null;
+				}
+				return msg;
+			}
+			
+			private void sendToServer(String msg) {
+				if(msg.indexOf('\n') == -1) {
+					msg +='\n';
+				}
+				try {
+					out.writeBytes(msg);
+				} catch (Exception exception) {
+					exception.printStackTrace();
+				} 
+			}
+			
+            @Override
+            public void run() {
+            	try {
+					InetAddress serverAddr = InetAddress.getByName(SERVER_IP);
+					socket = new Socket(serverAddr, SERVERPORT);
+					out = new DataOutputStream(socket.getOutputStream());
+					in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+					
+					// send username
+					sendUserName();
+					Log.d(TAG, "Name comp: " + Name);
+					
+					// find number of players
+					playerNo = getPlayerNo();
+					
+					Log.d(TAG, "Players comp: " + playerNo);
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+            }
+		});
+		thread.start();
+	}
+	
+	public static String StreamToString(InputStream is) throws Exception {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+        }
+        is.close();
+
+        return sb.toString();
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
