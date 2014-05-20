@@ -1,10 +1,14 @@
 package com.patrupopa.wordscocktail;
 
+
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,12 +48,38 @@ public class MainActivity extends ActionBarActivity {
 		{
 			b.setOnClickListener(new View.OnClickListener() {
 				public void onClick(View v) {
-					setContentView(R.layout.instructions);
+					//setContentView(R.layout.instructions);
+					startActivity(new Intent("com.popapatru.wordscocktail.action.INSTR"));
 				}
 			});
 			
 		}catch (Exception e) {
 			// 
+		}
+		
+		
+		//restore_game
+		if( savedGame() ) 
+		{
+			b = (Button) findViewById(R.id.restore_game);
+			b.setEnabled(true);
+			b.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if(savedGame()) 
+					{
+						startActivity(new 
+							Intent("com.popapatru.wordscocktail.action.RESTORE_GAME"));
+					} else {
+						
+				
+					}
+				}
+			});
+		}
+		else
+		{
+			b = (Button) findViewById(R.id.restore_game);
+			b.setEnabled(false);
 		}
 //		if (savedInstanceState == null) {
 //			getSupportFragmentManager().beginTransaction()
@@ -104,6 +134,43 @@ public class MainActivity extends ActionBarActivity {
 			View rootView = inflater.inflate(R.layout.choice_screen, container,
 					false);
 			return rootView;
+		}
+	}
+	
+	public boolean savedGame() {
+		Resources res = getResources();
+		SharedPreferences prefs = getSharedPreferences("prefs_game_file",
+			MODE_PRIVATE);
+		boolean yes = (prefs.getInt("boardSize",0) == 16);
+		return yes;
+	}
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		//restore_game
+		if( savedGame() ) 
+		{
+			Button b = (Button) findViewById(R.id.restore_game);
+			b.setEnabled(true);
+			b.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					if(savedGame()) 
+					{
+						startActivity(new 
+							Intent("com.popapatru.wordscocktail.action.RESTORE_GAME"));
+					} else {
+						
+				
+					}
+				}
+			});
+		}
+		else
+		{
+			Button b = (Button) findViewById(R.id.restore_game);
+			b.setEnabled(false);
 		}
 	}
 

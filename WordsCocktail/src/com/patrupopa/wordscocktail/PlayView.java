@@ -165,12 +165,12 @@ public class PlayView extends View implements Worker {
 		color.setTypeface(font);
 		color.setARGB(255,255,255,255);
 		//setting text size
-		float cellWidth = getMeasuredWidth()/16;
+		float textSize = getMeasuredWidth()/16;
 		
-		color.setTextSize(cellWidth);
+		color.setTextSize(textSize);
 		
-		canvas.drawText("Score:",                     24*PADDING,getMeasuredHeight() - 3*PADDING,color);
-		canvas.drawText(_game.getCurrentScore() + "", 26*PADDING,getMeasuredHeight() -   PADDING,color);
+		canvas.drawText("Score:",                     2*getMeasuredWidth()/3 + PADDING,getMeasuredHeight() - 2*textSize,color);
+		canvas.drawText(_game.getCurrentScore() + "", 2*getMeasuredWidth()/3 + PADDING+textSize/2,getMeasuredHeight() -   PADDING,color);
 	}
 
 	private void showWordCount(Canvas canvas) {
@@ -185,8 +185,8 @@ public class PlayView extends View implements Worker {
 		float textSize = getMeasuredWidth()/16;	
 		color.setTextSize(textSize);
 		
-		canvas.drawText( "Words:",                  12*PADDING,getMeasuredHeight() - 3*PADDING,color);
-		canvas.drawText( _game.getWordCount() + "",	14*PADDING,getMeasuredHeight() -   PADDING,color);		
+		canvas.drawText( "Words:",                  getMeasuredWidth()/3 + PADDING,getMeasuredHeight() - 2*textSize ,color);
+		canvas.drawText( _game.getWordCount() + "",	getMeasuredWidth()/3 + PADDING+textSize/2,getMeasuredHeight() -   PADDING,color);		
 	}
 
 	private void showTimer(Canvas canvas) {
@@ -211,8 +211,8 @@ public class PlayView extends View implements Worker {
 		String time = "" + mins + ":"+ secs;
 		float textSize = getMeasuredWidth()/16;
 		color.setTextSize(textSize);
-		canvas.drawText("Time:",                PADDING, getMeasuredHeight() - 3 * PADDING, color);
-		canvas.drawText(time,                   2*PADDING, getMeasuredHeight() -     PADDING, color);
+		canvas.drawText("Time:",                PADDING, getMeasuredHeight() - 2*textSize , color);
+		canvas.drawText(time,                   2*PADDING, getMeasuredHeight() - PADDING , color);
 	}
 
 	private void showGrid(Canvas canvas) {

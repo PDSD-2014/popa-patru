@@ -32,13 +32,29 @@ public class FingerTouch {
 			return;
 		int row = detectRow(y);
 		int col = detectColumn(x);
+		boolean result = HotSpot(row, col, x, y);
+		if( result == false )
+			return;
+		//here I should calculate if this touch is a hot spot
 		int value = row*_width + col;
 		if( _positions.contains(value) == false )
 		{
 			_positions.add(new Integer(value));
 		}
 	}
-
+	private boolean HotSpot(int row, int col, float touchX, float touchY)
+	{
+		float colWidth = ( _right - _left)/_width;
+		float rowHeight = (_bottom - _top)/_height;
+		float leftMargin = col*colWidth + colWidth/3;
+		float rightMargin = col*colWidth + 2*colWidth/3;
+		float upperMargin = row*rowHeight + rowHeight/3;
+		float lowerMargin = row*rowHeight + 2*rowHeight/3;
+		return touchX > leftMargin  && touchX < rightMargin &&
+				touchY > upperMargin && touchY < lowerMargin;
+				
+				
+	}
 	private int detectColumn(float x) {
 		float colWidth = ( _right - _left)/_width;
 		return (int) ((x-_left )/colWidth);

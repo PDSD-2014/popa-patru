@@ -10,9 +10,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.patrupopa.wordscocktail.Game.Status;
-
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.content.res.Resources.Theme;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 public class PlaySingleGame extends Activity implements Stopper {
 
@@ -46,12 +48,14 @@ public class PlaySingleGame extends Activity implements Stopper {
 			return;
 		}
 		try {
+			System.gc();
+			loadDictionary();
 			String action = getIntent().getAction();
-			if(action.equals("com.popapatru.wordscocktail.action.RESTORE_GAME")) {
-				//restoreGame();
+			if(action.equals("com.popapatru.wordscocktail.action.RESTORE_GAME")) 
+			{
+				restoreGame();
 			} else if(action.equals("com.popapatru.wordscocktail.action.NEW_GAME")) {
-				System.gc();
-				loadDictionary();
+				
 				newSingleGame();
 			} else {
 				
@@ -60,8 +64,59 @@ public class PlaySingleGame extends Activity implements Stopper {
 			
 		}
     }
+    private void restoreGame() {
+		// TODO Auto-generated method stub
+    	Resources res = getResources();
+		SharedPreferences prefs = getSharedPreferences("prefs_game_file",
+			this.MODE_PRIVATE);
 
+		_game = new Game(this,prefs);
+		
+		clearSavedGame();
+
+		restoreGame(_game);
+		
+	}
+		// TODO Auto-generated method stub
+	private void clearSavedGame() {
+		SharedPreferences prefs = getSharedPreferences("prefs_game_file",
+			this.MODE_PRIVATE);
+
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putInt("boardSize" , 0 );
+		editor.commit();
+
+	}
+		
+	
 	@Override
+    protected void onSaveInstanceState(Bundle outState) {
+    	// TODO Auto-generated method stub
+    	super.onSaveInstanceState(outState);
+    	//saveGame(outState);
+    	
+    }
+    //ths is auxiliary for restore game
+    private void saveGame(Bundle state) {
+		if( _game.getStatus() == Game.Status.RUNNING ) 
+		{
+			// Log.d(TAG,"Saving");
+			_game.pause();
+			_game.save(state);
+		}
+	}
+    @Override
+    protected void onPause() {
+    	// TODO Auto-generated method stub
+    	saveGame();
+		_thread.exit();
+		_game.pause();
+		super.onPause();
+		
+		
+    }
+    
+    @Override
 	public boolean onCreateOptionsMenu(Menu m) {
 		menu = m;
 
@@ -83,13 +138,21 @@ public class PlaySingleGame extends Activity implements Stopper {
 				finish();
 			break;
 			case R.id.end_game:
-				_game.endNow();
+				//_game.endNow();
+				_thread.exit();
+				finish();
 		}
 		return true;
 	}
 
 	private void saveGame() {
 		// TODO Auto-generated method stub
+		if( _game.getStatus() == Game.Status.RUNNING) 
+		{
+			SharedPreferences prefs = getSharedPreferences(
+				 "prefs_game_file",this.MODE_PRIVATE);
+			_game.save(prefs.edit());
+		}
 		
 	}
 
@@ -106,6 +169,22 @@ public class PlaySingleGame extends Activity implements Stopper {
 	}
 	private void restoreGame(Game _game2) {
 		// TODO Auto-generated method stub
+
+		PlayView pv = new PlayView(this,_game2);
+
+		if( _thread != null) {
+			_thread.exit();
+		}
+		_thread = new GameThread();
+		_thread.setCounter(_game);
+		_thread.addWorker(pv);
+		_thread.setStopper(this);
+
+		ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(this.getWindow().getAttributes()
+				.width, this.getWindow().getAttributes()
+				.height);
+		setContentView( pv , lp);
+		pv.setKeepScreenOn(true);
 		
 	}
 
@@ -151,6 +230,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 		scoreIntent.putExtras(bun);
 
 		startActivity(scoreIntent);
+		_game.setStatus(Game.Status.FINISHED);
 		finish();
 	}
 	
