@@ -57,6 +57,20 @@ public class MainActivity extends ActionBarActivity {
 			// 
 		}
 		
+		//preferences
+		b = (Button) findViewById(R.id.preferences);
+		try
+		{
+			b.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View v) {
+					//setContentView(R.layout.instructions);
+					startActivity(new Intent("com.popapatru.wordscocktail.action.SETTINGS"));
+				}
+			});
+			
+		}catch (Exception e) {
+			// 
+		}
 		
 		//restore_game
 		if( savedGame() ) 

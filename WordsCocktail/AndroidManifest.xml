@@ -60,12 +60,20 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-         <activity
+        <activity
             android:name="com.patrupopa.wordscocktail.FinalScore"
-            android:label="@string/title_activity_final_score"
-            >
+            android:label="@string/title_activity_final_score" >
             <intent-filter>
                 <action android:name="com.popapatru.wordscocktail.action.FINAL_SCORE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.patrupopa.wordscocktail.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+            <intent-filter>
+                <action android:name="com.popapatru.wordscocktail.action.SETTINGS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -73,4 +81,3 @@
     </application>
 
 </manifest>
-
