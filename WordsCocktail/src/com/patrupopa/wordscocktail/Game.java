@@ -15,12 +15,14 @@ import java.util.LinkedList;
 import java.util.Random;
 
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 
 
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.patrupopa.wordscocktail.Game.Status;
@@ -73,7 +75,8 @@ public class Game implements Counter {
 		setStatus(Status.STARTING);
 		
 		setBoardSize(16);
-		setTimeLimit(_timeLimit);
+		readPreferences(c);
+		//setTimeLimit(_timeLimit);
 		alphabet = new ArrayList<LetterProb>();
 //		if( _trie == null)
 //			loadDictionary();
@@ -600,5 +603,14 @@ public Game(Context c, SharedPreferences preferences) {
 		{
 			_status = Game.Status.PAUSED; 
 		}
+	}
+	
+	private void readPreferences(Context c) {
+		SharedPreferences prefs = 
+			PreferenceManager.getDefaultSharedPreferences(c);
+
+		int aux = Integer.parseInt(
+			prefs.getString("timeLimit","60"));
+		setTimeLimit(aux);
 	}
 }

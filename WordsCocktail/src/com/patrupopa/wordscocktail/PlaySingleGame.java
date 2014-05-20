@@ -37,9 +37,7 @@ public class PlaySingleGame extends Activity implements Stopper {
     public void onCreate(Bundle savedInstanceState) {
      	super.onCreate(savedInstanceState);
      	
-     	setContentView(R.layout.loading);
-     	
-		if(savedInstanceState != null) {
+     	if(savedInstanceState != null) {
 			try {
 				restoreGame(savedInstanceState);
 			} catch (Exception e) {
@@ -47,6 +45,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 			}
 			return;
 		}
+		setContentView(R.layout.loading);
 		try {
 			System.gc();
 			loadDictionary();
