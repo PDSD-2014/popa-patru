@@ -6,7 +6,7 @@
     <string name="one_player">Train yourself!</string>
     <string name="restore_game">Restore Game</string>
     <string name="prefs">Settings</string>
-    <string name="name">Choose you name</string>
+    <string name="name">Choose your name</string>
     <string name="get_name">Enter Name!</string>
     <string name="loading">Words Cocktail is loading...</string>
     <string name="waiting">Words Cocktail is waiting for more users...</string>
@@ -46,5 +46,6 @@
     <string name="title_activity_login">Login</string>
     <string name="title_activity_final_score">Final Score</string>
     <string name="title_activity_instructions">Instructions</string>
+    <string name="title_activity_final_score_multi">FinalScoreMulti</string>
 
 </resources>

@@ -35,6 +35,8 @@ public class PlayWithOthers extends Activity implements Stopper {
     public static final int SERVERPORT = 28028;
     public static final String SERVER_IP = "192.168.173.1";
     
+    public String finalScores = "";
+    public int score = -1;
 	public String Name = "";
 	public int playerNo = 0;
 	public String board = "";
@@ -45,6 +47,7 @@ public class PlayWithOthers extends Activity implements Stopper {
 	private Handler handler = new Handler(){
 			  @Override
 			  public void handleMessage(Message msg) {
+				 this.obtainMessage();
 			    newOnlineGame();
 			    Log.d(TAG, "BOARD to play: " + _onlinegame.getBoard().toString());
 			    if( _onlinegame.getStatus() == Status.STARTING )
@@ -56,6 +59,22 @@ public class PlayWithOthers extends Activity implements Stopper {
 				}
 			  }
 			};
+	private Handler scoreHandler = new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				this.obtainMessage();
+				Bundle bun = new Bundle();
+				bun.putString("allscore", finalScores);
+				Intent scoreIntent = new Intent("com.popapatru.wordscocktail.action.FINAL_SCORE_MULTI");
+				
+				//and then will get it from here
+				scoreIntent.putExtras(bun);
+
+				startActivity(scoreIntent);
+				
+				finish();
+			}
+		};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +111,16 @@ public class PlayWithOthers extends Activity implements Stopper {
 	
 	private void connectToServer() {
 		Thread thread = new Thread(new Runnable() {
+			
+			private void communicateScores() {
+				while (score == -1) {
+					continue;
+				}
+				Log.d(TAG, "Score: " + Integer.toString(score));
+				sendToServer(Integer.toString(score));
+				finalScores = receiveFromServer();
+				Log.d(TAG, finalScores);
+			}
 			
 			private void negotiateBoard() {
 				board = receiveFromServer();
@@ -181,6 +210,12 @@ public class PlayWithOthers extends Activity implements Stopper {
 					Message msg = new Message();
 					handler.sendMessage(msg);
 					
+					// send scores
+					communicateScores();
+					
+					msg = new Message();
+					scoreHandler.sendMessage(msg);
+					
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -254,16 +289,11 @@ public class PlayWithOthers extends Activity implements Stopper {
 	private void showScore(){
 		//stop the thread
 		_thread.exit();
-		//give the control to the score intent, to be implemented
 		Bundle bun = new Bundle();
-		Intent scoreIntent = new Intent("com.popapatru.wordscocktail.action.FINAL_SCORE");
-		
-		//and then will get it from here
-		scoreIntent.putExtras(bun);
-
-		startActivity(scoreIntent);
+		_onlinegame.save(bun);
+		score = bun.getInt("score");
 		_onlinegame.setStatus(Game.Status.FINISHED);
-		finish();
+		//finish();
 	}
 	
 	private void loadDictionary() {

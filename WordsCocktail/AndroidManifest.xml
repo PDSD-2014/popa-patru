@@ -45,8 +45,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.patrupopa.wordscocktail.PlayWithOthers" >
+        <activity android:name="com.patrupopa.wordscocktail.PlayWithOthers" >
             <intent-filter>
                 <action android:name="com.popapatru.wordscocktail.action.MULTIPLAYER_GAME" />
 
@@ -67,6 +66,14 @@
             android:label="@string/title_activity_settings" >
             <intent-filter>
                 <action android:name="com.popapatru.wordscocktail.action.SETTINGS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.patrupopa.wordscocktail.FinalScoreMulti" >
+            <intent-filter>
+                <action android:name="com.popapatru.wordscocktail.action.FINAL_SCORE_MULTI" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
