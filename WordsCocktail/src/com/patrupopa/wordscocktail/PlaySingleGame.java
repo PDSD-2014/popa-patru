@@ -36,7 +36,7 @@ public class PlaySingleGame extends Activity implements Stopper {
     @Override
     public void onCreate(Bundle savedInstanceState) {
      	super.onCreate(savedInstanceState);
-     	
+     	Log.d(TAG, "here");
      	if(savedInstanceState != null) {
 			try {
 				restoreGame(savedInstanceState);
@@ -56,6 +56,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 			} else if(action.equals("com.popapatru.wordscocktail.action.NEW_GAME")) {
 				
 				newSingleGame();
+				Log.d(TAG, "after new single game");
 			} else {
 				
 			}
@@ -69,7 +70,7 @@ public class PlaySingleGame extends Activity implements Stopper {
 		SharedPreferences prefs = getSharedPreferences("prefs_game_file",
 			this.MODE_PRIVATE);
 
-		_game = new Game(this,prefs);
+		_game = new Game(this,prefs,_trie);
 		
 		clearSavedGame();
 
@@ -189,8 +190,8 @@ public class PlaySingleGame extends Activity implements Stopper {
 
 	private void newSingleGame() {
 		//make new instance of  the game
-		_game = new Game(this,_trie);
-		
+		_game = new Game(this, _trie);
+
 		PlayView _playView = new PlayView(this,_game);
 		
 		/*first of all stop the thread that was running*/
@@ -212,7 +213,6 @@ public class PlaySingleGame extends Activity implements Stopper {
 
 	@Override
 	public void stopEvent() {
-		// TODO Auto-generated method stub
 		//the final event here is that the score is shown
 		showScore();
 	}
@@ -235,7 +235,6 @@ public class PlaySingleGame extends Activity implements Stopper {
 	
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 		
 		if( _game == null )
@@ -250,11 +249,9 @@ public class PlaySingleGame extends Activity implements Stopper {
 	}
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 	private void loadDictionary() {
-		// TODO Auto-generated method stub
 			Log.d(TAG, "Loading dictionary...");
 	        InputStream inputStream = getResources().openRawResource(R.raw.dictionary);
 	        int SIZE = 64000;
@@ -264,40 +261,13 @@ public class PlaySingleGame extends Activity implements Stopper {
 	        long diff = 0 ; 
 	        try {
 	            String line;
-	            //int counter = 0 ;
 	            try {
 	            	long currentTime = System.currentTimeMillis();
-//					while ((line = reader.readLine()) != null /*&& counter < 1000*/ ) 
-//					{
-//					    String[] strings = line.split(" ");
-//					    
-//					    if( strings[0].length() < 2 )
-//				    		continue;
-//					    boolean result = _trie.insert(strings[0].trim());
-//					    if ( result  == false ) 
-//					    {
-//					        Log.e(TAG, "unable to add word: " + strings[0].trim());
-//					    }
-//				    
-//					    //counter++;
-//					}
-					
 					//second more performant method
 	            	String s = null;
-	            	//String[] strings = null;
 	            	//remove false from here!!!!!!
 					while ( (inputStream.read( barray, 0, SIZE )) != -1 )
-					{
-						s = new String(barray);
-						
-//					    strings = s.split("\r\n");
-//					    for( int i = 0 ; i < strings.length; ++i )
-//					    {
-//					    	if( strings[i].length() < 2 )
-//					    		continue;
-//					    	_trie.insert(strings[i]);
-//					    }
-					    
+					{    
 					    int pos = 0, end;
 					    String aux = null;
 			            while ((end = s.indexOf("\r\n", pos)) >= 0) {
@@ -311,7 +281,6 @@ public class PlaySingleGame extends Activity implements Stopper {
 					diff = System.currentTimeMillis() - currentTime;
 					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        } finally {

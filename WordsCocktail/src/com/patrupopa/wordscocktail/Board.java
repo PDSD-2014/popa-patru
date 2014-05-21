@@ -16,6 +16,22 @@ public class Board {
 		_size = _width*_height;
 		
 	}
+	
+	@Override
+	public String toString() {
+		String letters = "";
+		for (int i = 0; i < _size; i++) {
+			letters += _board[i];
+		}
+		return letters;
+	}
+	
+	public void fromString(String board) {
+		for (int i = 0; i < board.length(); i++) {
+			_board[i] = board.substring(i, i + 1);
+		}
+	}
+	
 	public void setBoard(String [] b){
 		_board = b;
 	}

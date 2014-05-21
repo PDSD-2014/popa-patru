@@ -5,18 +5,18 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import com.patrupopa.wordscocktail.Game.Status;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,7 +27,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.os.Build;
 
-public class PlayWithOthers extends Activity {
+public class PlayWithOthers extends Activity implements Stopper {
 
 	public Socket socket;
 	DataOutputStream out;
@@ -37,19 +37,33 @@ public class PlayWithOthers extends Activity {
     
 	public String Name = "";
 	public int playerNo = 0;
+	public String board = "";
 	private String TAG = "PlayWithOthers";
-	private OnlineGame onlinegame;
+	private Game _onlinegame = null;
+	private GameThread _thread;
 	Dictionary _trie;
+	private Handler handler = new Handler(){
+			  @Override
+			  public void handleMessage(Message msg) {
+			    newOnlineGame();
+			    Log.d(TAG, "BOARD to play: " + _onlinegame.getBoard().toString());
+			    if( _onlinegame.getStatus() == Status.STARTING )
+				{
+					
+					_onlinegame.start();
+					_thread.start();
+					return;
+				}
+			  }
+			};
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//setContentView(R.layout.activity_play_with_others);
 
-		if (savedInstanceState == null) {
-
+		if (savedInstanceState != null) {
+			return;
 		}
-		setContentView(R.layout.loading);
 		
 		if (Name == "") {
 			setContentView(R.layout.enter_name);
@@ -64,41 +78,40 @@ public class PlayWithOthers extends Activity {
 						
 						// make server connection
 						connectToServer();
-						
 						setContentView(R.layout.waiting);
-						
-						if (playerNo > 1)
-							try {
-								newGame();
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						else
-							setContentView(R.layout.waiting);
 					}
 				}
 			});
 		}
-		/*
-		try {
-			//String url = getIntent().getData().toString();
-			System.gc();
-			loadDictionary();
-			newGame();
-		} catch (Exception e) {
-			Log.e(TAG, e.toString());
-		}*/
+		String action = getIntent().getAction();
+		Log.d(TAG, action);
+		loadDictionary();
+		_onlinegame = new Game(this, _trie);
+		board = _onlinegame.getBoard().toString();
 	}
 	
 	private void connectToServer() {
 		Thread thread = new Thread(new Runnable() {
 			
+			private void negotiateBoard() {
+				board = receiveFromServer();
+				Log.d(TAG, "Received board " + board);
+				if (board != null)
+					_onlinegame.setBoard(board);
+			}
+			
+			private void sendBoard() {
+				while (board == "") {
+					continue;
+				}
+				Log.d(TAG, "Board: " + board);
+				sendToServer(board);
+			}
+			
 			private int getPlayerNo() {
 				int playerNo = 0;
 				try {
 					playerNo = Integer.parseInt(receiveFromServer());
-					sendToServer("ok");
 				} catch (Exception e) {
 					e.printStackTrace();
 					return 0;
@@ -110,9 +123,7 @@ public class PlayWithOthers extends Activity {
 				sendToServer(Name);
 				try {
 					Name = receiveFromServer();
-					sendToServer("ok");
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -121,7 +132,6 @@ public class PlayWithOthers extends Activity {
 				String msg = null;
 				try { 
 					msg= in.readLine();
-					//System.out.println("received: " + msg);
 				} catch (Exception exception) {
 					exception.printStackTrace();
 					msg = null;
@@ -152,10 +162,25 @@ public class PlayWithOthers extends Activity {
 					sendUserName();
 					Log.d(TAG, "Name comp: " + Name);
 					
+					// send local board to server
+					sendBoard();
+					
 					// find number of players
 					playerNo = getPlayerNo();
 					
+					if (playerNo < 2)
+						getPlayerNo();
 					Log.d(TAG, "Players comp: " + playerNo);
+
+					Log.d(TAG, "Game can now begin");
+					
+					// receive board from server
+					negotiateBoard();
+					
+					// start new game with your friends!
+					Message msg = new Message();
+					handler.sendMessage(msg);
+					
 				} catch (UnknownHostException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -166,18 +191,28 @@ public class PlayWithOthers extends Activity {
 		thread.start();
 	}
 	
-	public static String StreamToString(InputStream is) throws Exception {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
+	
+	public void newOnlineGame() {
+		Log.d(TAG, "ONLINE GAME");
+		
+		PlayView _playView = new PlayView(this, _onlinegame);
+		
+		// first of all stop the thread that was running
+		if (_thread != null) {
+			_thread.exit();
+		}
+		_thread = new GameThread();
+		_thread.setCounter(_onlinegame);
+		_thread.addWorker(_playView);
+		_thread.setStopper(this);
 
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
-        }
-        is.close();
-
-        return sb.toString();
-    }
+		ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(this.getWindow().getAttributes()
+				.width, this.getWindow().getAttributes()
+				.height);
+		setContentView( _playView , lp);
+		_playView.setKeepScreenOn(true);
+		Log.d(TAG, "ONLINE GAME end constr");
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -189,23 +224,49 @@ public class PlayWithOthers extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
+		switch(item.getItemId()) {
+		case R.id.rotate_board:
+			_onlinegame.rotateBoard();	
+		break;
+		case R.id.save_game:
+			_thread.exit();
+			//saveGame();
+			finish();
+		break;
+		case R.id.end_game:
+			//_onlinegame.endNow();
+			//_thread.exit();
+			//finish();
 		}
-		return super.onOptionsItemSelected(item);
+		return true;
 	}
 	
-	private void newGame() throws Exception {
-		onlinegame = new OnlineGame(this, _trie);
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		return _onlinegame.getStatus() == Game.Status.RUNNING;
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+	
+	private void showScore(){
+		//stop the thread
+		_thread.exit();
+		//give the control to the score intent, to be implemented
+		Bundle bun = new Bundle();
+		Intent scoreIntent = new Intent("com.popapatru.wordscocktail.action.FINAL_SCORE");
+		
+		//and then will get it from here
+		scoreIntent.putExtras(bun);
 
+		startActivity(scoreIntent);
+		_onlinegame.setStatus(Game.Status.FINISHED);
+		finish();
 	}
 	
 	private void loadDictionary() {
-		// TODO Auto-generated method stub
 			Log.d(TAG, "Loading dictionary...");
 	        InputStream inputStream = getResources().openRawResource(R.raw.dictionary);
 	        int SIZE = 64000;
@@ -234,12 +295,16 @@ public class PlayWithOthers extends Activity {
 					diff = System.currentTimeMillis() - currentTime;
 					
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	        } finally {
 	        }
 	        Log.d(TAG, "DONE loading words.");
+	}
+
+	@Override
+	public void stopEvent() {
+		showScore();
 	}
 
 }

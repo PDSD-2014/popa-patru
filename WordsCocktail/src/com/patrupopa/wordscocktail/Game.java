@@ -66,11 +66,12 @@ public class Game implements Counter {
 	private final static int _timeLimit = 60;
 	
 	public Game(PlaySingleGame playSingleGame, Bundle bun) {
-		// TODO Auto-generated constructor stub
+		Log.d("GAME", "Game(PlaySingleGame playSingleGame, Bundle bun)");
 	}
 
 	public Game(Context c, Dictionary trie) {
-		// TODO Auto-generated constructor stub
+		Log.d("GAME", "Game(Context c, Dictionary trie)");
+		
 		_context = c;
 		setStatus(Status.STARTING);
 		
@@ -99,11 +100,12 @@ public class Game implements Counter {
 	}
 	
 	//this constructor is for when you want to restore game from preferences
-public Game(Context c, SharedPreferences preferences) {
-		
+public Game(Context c, SharedPreferences preferences, Dictionary trie) {
+		Log.d("GAME", "Game(Context c, SharedPreferences preferences, Dictionary trie)");
+	
 		_context = c;
 		setStatus(Status.STARTING);
-		
+		_trie = trie;
 		setBoardSize(preferences.getInt("boardSize", 16));
 		
 		String [] board = preferences.getString("gameBoard", "").split(",");
@@ -278,10 +280,12 @@ public Game(Context c, SharedPreferences preferences) {
 //		_board = new Board(hc);
 	}
 
-	public Board getBoard()
-	{
-		
+	public Board getBoard() {
 		return _board;
+	}
+	
+	public void setBoard(String board) {
+		_board.fromString(board);;
 	}
 	
 	
@@ -589,7 +593,8 @@ public Game(Context c, SharedPreferences preferences) {
 	}
 	public void appendToBadWords(String toAppend)
 	{
-		_badWords += toAppend + "\n";
+		if( toAppend.length() > 0 )
+			_badWords += toAppend + "\n";
 	}
 	
 	public boolean isAlready(String word)

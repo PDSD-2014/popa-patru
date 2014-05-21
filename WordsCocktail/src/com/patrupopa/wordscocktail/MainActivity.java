@@ -75,6 +75,7 @@ public class MainActivity extends ActionBarActivity {
 		//restore_game
 		if( savedGame() ) 
 		{
+			Log.d("RESTORE", "RESTORE GAME");
 			b = (Button) findViewById(R.id.restore_game);
 			b.setEnabled(true);
 			b.setOnClickListener(new View.OnClickListener() {
